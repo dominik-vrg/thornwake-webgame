@@ -63,3 +63,15 @@ canvas {
 .footnote {
     font-size: 11px; color: #6b6058; letter-spacing: 1px;
 }
+
+.canvas-stack {
+    position: relative;
+}
+
+.toast {
+    position: absolute;
+    bottom: 14px;
+    left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: rgba(0, 0, 0, 0.5); /* to be continued */
+}
