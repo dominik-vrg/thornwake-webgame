@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Thornwake</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <div class="wrap">
+            <div class="titlebar"><b>Thornwake</b></div>
+            <div class="frame">
+                <canvas id="game" width="800" height="600"></canvas>
+            </div>
+            <div class="hud">
+                <div class="keys">Move: <b>WASD / Arrows</b> &nbsp;|&nbsp; Toggle debug: <b>I</b></div>
+                <div class="debug" id="debugLine">x:0 y:0 tile:(0, 0) fps:0</div>
+            </div>
+            <div class="footnote">no libraries and engine used</div>
+        </div>
+
+        <script src="game.js"></script>
+    </body>
+</html>
