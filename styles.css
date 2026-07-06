@@ -73,5 +73,246 @@ canvas {
     bottom: 14px;
     left: 50%;
     transform: translateX(-50%) translateY(10px);
-    background: rgba(0, 0, 0, 0.5); /* to be continued */
+    background: rgba(20, 16, 15, 0.92);
+    border: 1px solid var(--accent);
+    color: var(--ink);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    opacity: 0;
+    transition: opacity 0.25s, transform 0.25s;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.inv-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 8, 7, 0.72);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+}
+
+.inv-overlay.hidden {
+    display: none;
+}
+
+.inv-panel {
+    width: 640px;
+    max-width: 92vw;
+    background: var(--panel);
+    border: 1px solid var(--panel-line);
+    border-radius: 10px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+    padding: 18px 20px;
+}
+
+.inv-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 1px solid var(--panel-line);
+    padding-bottom: 10px;
+    margin-bottom: 14px;
+}
+
+.inv-title {
+    color: var(--accent);
+    font-size: 15px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.inv-close-hint {
+    font-size: 11px;
+    color: var(--ink-dim);
+}
+
+.inv-body {
+    display: flex;
+    gap: 20px;
+}
+
+.section-title {
+    font-size: 11px;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+}
+
+.equip-section {
+    flex: 0 0 170px;
+}
+
+.equip-slots {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+}
+
+.equip-slot {
+    aspect-ratio: 1;
+    border: 2px dashed var(--panel-line);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    cursor: pointer;
+}
+
+.equip-slot.filled {
+    border-style: solid;
+    border-color: var(--accent);
+    background: rgba(201, 138, 62, 0.08);
+}
+
+.equip-slot.selected {
+    outline: 2px solid var(--accent-2);
+    outline-offset: 1px;
+}
+
+.equip-slot.drag-over {
+    background: rgba(201, 138, 62, 0.28);
+}
+
+.equip-slot-icon {
+    font-size: 22px;
+}
+
+.equip-slot-label {
+    font-size: 9px;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stats-readout {
+    margin-top: 14px;
+    font-size: 12px;
+    color: var(--ink-dim);
+    line-height: 1.7;
+}
+
+.stats-readout b {
+    color: var(--accent);
+}
+
+.hp-bar-bg {
+    width: 100%;
+    height: 8px;
+    background: #3a2c22;
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 2px 0 6px;
+}
+
+.hp-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #7a2e2e, #c94f4f);
+}
+
+.inv-grid-section {
+    flex: 1;
+}
+
+.inv-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-auto-rows: 54px;
+    gap: 6px;
+}
+
+.slot {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--panel-line);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    font-size: 21px;
+    cursor: pointer;
+}
+
+.slot.filled:hover {
+    border-color: var(--accent);
+}
+
+.slot.selected {
+    outline: 2px solid var(--accent-2);
+    outline-offset: 1px;
+}
+
+.slot.drag-over {
+    background: rgba(201, 138, 62, 0.25);
+}
+
+.slot .qty-badge {
+    position: absolute;
+    bottom: 2px;
+    right: 4px;
+    font-size: 10px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 4px;
+    padding: 0 3px;
+    color: var(--ink);
+}
+
+.inv-footer {
+    margin-top: 16px;
+    border-top: 1px solid var(--panel-line);
+    padding-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+}
+
+.tooltip {
+    font-size: 12px;
+    color: var(--ink-dim);
+    flex: 1;
+    min-height: 32px;
+    line-height: 1.5;
+}
+
+.tooltip b {
+    color: var(--ink);
+}
+
+.inv-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.inv-actions button {
+    background: var(--accent);
+    border: none;
+    color: #241a0f;
+    font-weight: bold;
+    padding: 6px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+}
+
+.inv-actions button:hover {
+    filter: brightness(1.1);
+}
+
+.inv-actions button.secondary {
+    background: var(--panel-line);
+    color: var(--ink);
 }

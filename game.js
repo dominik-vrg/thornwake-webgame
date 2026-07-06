@@ -119,6 +119,8 @@ function moveWithCollision(map, entity, dx, dy) {
     }
 }
 
+const UI = { inventoryOpen: false };
+
 //player
 const player = {
     x: map.spawn.x * TILE_SIZE + 4,
@@ -259,15 +261,20 @@ function tick(now) {
 }
 
 function update(dt) {
-    const { dx, dy } = readMovementInput();
-    moveWithCollision(map, player, dx * player.speed * dt, dy * player.speed * dt);
-    updateCamera();
+    if (!UI.inventoryOpen) {
+        const { dx, dy } = readMovementInput();
+        moveWithCollision(map, player, dx * player.speed * dt, dy * player.speed * dt);
+        updateCamera();
+    }
+    if (typeof updateWorldPickups === "function") updateWorldPickups(dt);
 }
 
 function render() {
     ctx.clearRect(0, 0, VIEW_W, VIEW_H);
     drawMap();
+    if (typeof drawWorldPickups === "function") drawWorldPickups(ctx, camera);
     drawPlayer();
+    if (typeof drawHud === "function") drawHud(ctx);
     drawDebug(fps);
 }
 

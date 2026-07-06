@@ -315,7 +315,7 @@ function showToast(msg) {
 const overlayEl = document.getElementById("inventoryOverlay");
 const equipSlotsEl = document.getElementById("equipSlots");
 const invGridEl = document.getElementById("invGrid");
-const statsReadoutEl = document.getElementById("statsRedout");
+const statsReadoutEl = document.getElementById("statsReadout");
 const tooltipEl = document.getElementById("itemTooltip");
 const actionsEl = document.getElementById("invActions");
 
