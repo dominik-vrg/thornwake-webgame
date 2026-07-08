@@ -296,6 +296,7 @@ function drawHud(ctx) {
     ctx.textAlign = "right";
     ctx.fillStyle = "rgba(232, 220, 200, 0.7)";
     ctx.fillText("[Tab] Inventory", VIEW_W - 10, 10);
+    ctx.fillText("[J] Journal", VIEW_W - 10, 24);
 
     ctx.restore();
 }
@@ -475,12 +476,14 @@ function toggleInventory(force) {
     UI.inventoryOpen = typeof force === "boolean" ? force : !UI.inventoryOpen;
     overlayEl.classList.toggle("hidden", !UI.inventoryOpen);
     if (UI.inventoryOpen) {
+        if (UI.journalOpen && typeof toggleJournal === "function") toggleJournal(false);
         selection = null;
         renderInventoryUI();
     }
 }
 
 window.addEventListener("keydown", (e) => {
+    if (!UI.gameStarted) return;
     const k = e.key.toLowerCase();
     if (k === "tab") { e.preventDefault(); toggleInventory(); }
     else if (k === "escape" && UI.inventoryOpen) toggleInventory(false);

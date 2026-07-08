@@ -119,7 +119,7 @@ function moveWithCollision(map, entity, dx, dy) {
     }
 }
 
-const UI = { inventoryOpen: false };
+const UI = { inventoryOpen: false, journalOpen: false, gameStarted: false };
 
 //player
 const player = {
@@ -151,7 +151,7 @@ let debugOn = true;
 
 window.addEventListener("keydown", (e) => {
     keys.add(e.key.toLowerCase());
-    if (e.key.toLowerCase() === "i") debugOn = !debugOn;
+    if (UI.gameStarted && e.key.toLowerCase() === "i") debugOn = !debugOn;
     if (["arrowup", "arrowdown", "arrowleft", "arrowright", " "].includes(e.key.toLowerCase())) e.preventDefault();
 });
 window.addEventListener("keyup", (e) => keys.delete(e.key.toLowerCase()));
@@ -261,12 +261,12 @@ function tick(now) {
 }
 
 function update(dt) {
-    if (!UI.inventoryOpen) {
+    if (UI.gameStarted && !UI.inventoryOpen && !UI.journalOpen) {
         const { dx, dy } = readMovementInput();
         moveWithCollision(map, player, dx * player.speed * dt, dy * player.speed * dt);
         updateCamera();
     }
-    if (typeof updateWorldPickups === "function") updateWorldPickups(dt);
+    if (UI.gameStarted && typeof updateWorldPickups === "function") updateWorldPickups(dt);
 }
 
 function render() {

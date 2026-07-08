@@ -15,7 +15,7 @@
                 </div>
             </div>
             <div class="hud">
-                <div class="keys">Move: <b>WASD / Arrows</b> &nbsp;|&nbsp; Inventory: <b>Tab</b> &nbsp;|&nbsp; Debug: <b>I</b></div>
+                <div class="keys">Move: <b>WASD / Arrows</b> &nbsp;|&nbsp; Inventory: <b>Tab</b> &nbsp;|&nbsp; Journal: <b>J</b> &nbsp;|&nbsp; Debug: <b>I</b></div>
                 <div class="debug" id="debugLine">x:0 y:0 tile:(0, 0) fps:0</div>
             </div>
             <div class="footnote">no libraries and engine used</div>
@@ -44,8 +44,35 @@
                 </div>
             </div>
         </div>
+
+        <div id="journalOverlay" class="inv-overlay hidden">
+            <div class="inv-panel journal-panel">
+                <div class="inv-header">
+                    <span class="inv-title">Journal</span>
+                    <span class="inv-close-hint">J / Esc to close</span>
+                </div>
+                <div class="journal-tabs" id="journalTabs">
+                    <button class="tab-btn active" data-tab="quests">Quests</button>
+                    <button class="tab-btn" data-tab="lore">Lore</button>
+                </div>
+                <div class="journal-content" id="journalContent"></div>
+            </div>
+        </div>
+
+        <div id="titleScreen" class="title-screen">
+            <div class="title-inner">
+                <h1 class="title-heading">Thornwake</h1>
+                <svg class="title-divider" viewBox="0 0 200 16" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 8 Q 20 2, 35 8 T 70 8 Q 85 14, 100 8 T 130 8 Q 145 2, 165 8 T 200 8" fill="none" stroke="#6f9e5e" stroke-width="1.5"></path>
+                </svg>
+                <div class="title-narration" id="titleNarration"></div>
+                <button id="beginBtn" class="tool-btn begin-btn">Enter the Forest</button>
+            </div>
+        </div>
         
         <script src="game.js"></script>
         <script src="inventory.js"></script>
+        <script src="journal.js"></script>
+        <script src="titlescreen.js"></script>
     </body>
 </html>
