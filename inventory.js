@@ -483,7 +483,7 @@ function toggleInventory(force) {
 }
 
 window.addEventListener("keydown", (e) => {
-    if (!UI.gameStarted) return;
+    if (!UI.gameStarted || UI.dialogueOpen) return;
     const k = e.key.toLowerCase();
     if (k === "tab") { e.preventDefault(); toggleInventory(); }
     else if (k === "escape" && UI.inventoryOpen) toggleInventory(false);

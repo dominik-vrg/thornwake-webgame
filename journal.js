@@ -76,7 +76,7 @@ function toggleJournal(force) {
 }
 
 window.addEventListener("keydown", (e) => {
-    if (!UI.gameStarted) return;
+    if (!UI.gameStarted || UI.dialogueOpen) return;
     const k = e.key.toLowerCase();
     if (k === "j") { e.preventDefault(); toggleJournal(); }
     else if (k === "escape" && UI.journalOpen) toggleJournal(false);

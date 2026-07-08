@@ -119,7 +119,7 @@ function moveWithCollision(map, entity, dx, dy) {
     }
 }
 
-const UI = { inventoryOpen: false, journalOpen: false, gameStarted: false };
+const UI = { inventoryOpen: false, journalOpen: false, dialogueOpen: false, gameStarted: false };
 
 //player
 const player = {
@@ -261,18 +261,22 @@ function tick(now) {
 }
 
 function update(dt) {
-    if (UI.gameStarted && !UI.inventoryOpen && !UI.journalOpen) {
+    const menuOpen = UI.inventoryOpen || UI.journalOpen || UI.dialogueOpen;
+
+    if (UI.gameStarted && !menuOpen) {
         const { dx, dy } = readMovementInput();
         moveWithCollision(map, player, dx * player.speed * dt, dy * player.speed * dt);
         updateCamera();
     }
-    if (UI.gameStarted && typeof updateWorldPickups === "function") updateWorldPickups(dt);
+    if (UI.gameStarted && !menuOpen && typeof updateWorldPickups === "function") updateWorldPickups(dt);
+    if (UI.gameStarted && typeof updateNPCs === "function") updateNPCs(dt);
 }
 
 function render() {
     ctx.clearRect(0, 0, VIEW_W, VIEW_H);
     drawMap();
     if (typeof drawWorldPickups === "function") drawWorldPickups(ctx, camera);
+    if (typeof drawNPCs === "function") drawNPCs(ctx, camera);
     drawPlayer();
     if (typeof drawHud === "function") drawHud(ctx);
     drawDebug(fps);

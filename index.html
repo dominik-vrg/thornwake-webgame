@@ -12,10 +12,15 @@
                 <div class="canvas-stack">
                     <canvas id="game" width="800" height="600"></canvas>
                     <div id="pickupToast" class="toast"></div>
+                    <div id="dialogueBox" class="dialogue-box hidden">
+                        <div class="dialogue-name" id="dialogueName"></div>
+                        <div class="dialogue-text" id="dialogueText"></div>
+                        <div class="dialogue-continue">▼ E / Click to continue</div>
+                    </div>
                 </div>
             </div>
             <div class="hud">
-                <div class="keys">Move: <b>WASD / Arrows</b> &nbsp;|&nbsp; Inventory: <b>Tab</b> &nbsp;|&nbsp; Journal: <b>J</b> &nbsp;|&nbsp; Debug: <b>I</b></div>
+                <div class="keys">Move: <b>WASD / Arrows</b> &nbsp;|&nbsp; Talk: <b>E</b> &nbsp;|&nbsp; Inventory: <b>Tab</b> &nbsp;|&nbsp; Journal: <b>J</b> &nbsp;|&nbsp; Debug: <b>I</b></div>
                 <div class="debug" id="debugLine">x:0 y:0 tile:(0, 0) fps:0</div>
             </div>
             <div class="footnote">no libraries and engine used</div>
@@ -67,12 +72,14 @@
                 </svg>
                 <div class="title-narration" id="titleNarration"></div>
                 <button id="beginBtn" class="tool-btn begin-btn">Enter the Forest</button>
+                <div class="title-hint">Press Enter or click to begin</div>
             </div>
         </div>
         
         <script src="game.js"></script>
         <script src="inventory.js"></script>
         <script src="journal.js"></script>
+        <script src="npc.js"></script>
         <script src="titlescreen.js"></script>
     </body>
 </html>
