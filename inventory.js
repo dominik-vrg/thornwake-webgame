@@ -297,6 +297,7 @@ function drawHud(ctx) {
     ctx.fillStyle = "rgba(232, 220, 200, 0.7)";
     ctx.fillText("[Tab] Inventory", VIEW_W - 10, 10);
     ctx.fillText("[J] Journal", VIEW_W - 10, 24);
+    ctx.fillText("[Space] Attack", VIEW_W - 10, 38);
 
     ctx.restore();
 }

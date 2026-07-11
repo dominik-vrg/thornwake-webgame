@@ -270,6 +270,7 @@ function update(dt) {
     }
     if (UI.gameStarted && !menuOpen && typeof updateWorldPickups === "function") updateWorldPickups(dt);
     if (UI.gameStarted && typeof updateNPCs === "function") updateNPCs(dt);
+    if (UI.gameStarted && !menuOpen && typeof updateEnemies === "function") updateEnemies(dt);
 }
 
 function render() {
@@ -277,7 +278,10 @@ function render() {
     drawMap();
     if (typeof drawWorldPickups === "function") drawWorldPickups(ctx, camera);
     if (typeof drawNPCs === "function") drawNPCs(ctx, camera);
+    if (typeof drawEnemies === "function") drawEnemies(ctx, camera);
     drawPlayer();
+    if (typeof drawPlayerAttack === "function") drawPlayerAttack(ctx, camera);
+    if (typeof drawDamagePopups === "function") drawDamagePopups(ctx, camera);
     if (typeof drawHud === "function") drawHud(ctx);
     drawDebug(fps);
 }
