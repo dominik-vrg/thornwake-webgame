@@ -1,7 +1,5 @@
 "use strict";
 
-const { cloneElement } = require("react");
-
 const ENEMY_DEFS = {
     thornling: {
         name: "Thornling",
