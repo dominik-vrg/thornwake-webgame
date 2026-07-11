@@ -9,6 +9,7 @@ const ENEMY_DEFS = {
         attack: 4,
         defense: 0,
         wanderSpeed: 30,
+        chaseSpeed: 65,
         leashRadius: 48,
         w: 22,
         h: 22,
@@ -61,6 +62,10 @@ const enemies = ENEMY_SPAWNS.map((s, i) => {
         wanderState: "idle",
         wanderTimer: 1 + Math.random() * 2,
         wanderTarget: null,
+        aiState: "wander",
+        path: [],
+        pathIndex: 0,
+        pathTimer: 0,
         respawnTimer: 0,
     };
 });
@@ -189,19 +194,6 @@ function respawnPlayer() {
     updateCamera();
 }
 
-//enemy update
-function pickWanderTarget(enemy) {
-    for (let attempt = 0; attempt < 8; attempt++) {
-        const angle = Math.random() * Math.PI * 2;
-        const dist = Math.random() * enemy.def.leashRadius;
-        const tx = enemy.spawnX + Math.cos(angle) * dist;
-        const ty = enemy.spawnY + Math.sin(angle) * dist;
-        if (!rectCollidesWithMap(map, tx, ty, enemy.w, enemy.h)) {
-            return { x: tx, y: ty };
-        }
-    }
-    return { x: enemy.spawnX, y: enemy.spawnY };
-}
 
 function updateEnemies(dt) {
     if (playerInvulnTimer > 0) playerInvulnTimer -= dt;
@@ -219,6 +211,10 @@ function updateEnemies(dt) {
                 enemy.y = enemy.spawnY;
                 enemy.wanderState = "idle";
                 enemy.wanderTimer = 1 + Math.random() * 2;
+                enemy.aiState = "wander";
+                enemy.path = [];
+                enemy.pathIndex = 0;
+                enemy.pathTimer = 0;
             }
             continue;
         }
@@ -230,26 +226,8 @@ function updateEnemies(dt) {
             enemy.knockbackVX *= 0.85;
             enemy.knockbackVY *= 0.85;
         } else {
-            enemy.wanderTimer -= dt;
-            if (enemy.wanderState === "idle") {
-                if (enemy.wanderTimer <= 0) {
-                    enemy.wanderTarget = pickWanderTarget(enemy);
-                    enemy.wanderState = "moving";
-                    enemy.wanderTimer = 3 + Math.random() * 2;
+            updateEnemyAI(enemy, dt);
                 }
-            } else {
-                const dx = enemy.wanderTarget.x - enemy.x;
-                const dy = enemy.wanderTarget.y - enemy.y;
-                const dist = Math.hypot(dx, dy);
-                if (dist < 3 || enemy.wanderTimer <= 0) {
-                    enemy.wanderState = "idle";
-                    enemy.wanderTimer = 1.5 + Math.random() * 2.5;
-                } else {
-                    const step = (enemy.def.wanderSpeed * dt) / dist;
-                    moveWithCollision(map, enemy, dx * step, dy * step);
-                }
-            }
-        }
 
         if (rectsOverlap(enemy, player)) {
             damagePlayer(enemy.def.attack);
@@ -267,8 +245,8 @@ function drawEnemies(ctx, camera) {
 
         ctx.save();
         ctx.fillStyle = enemy.hitFlash > 0 ? "#f2d98a" : enemy.def.color;
-        ctx.strokeStyle = "rgba(0, 0, 0, 0.4)";
-        ctx.lineWidth = 2;
+        ctx.strokeStyle = enemy.aiState === "chase" ? "#e06a6a" : "rgba(0,0,0,0.4)";
+        ctx.lineWidth = enemy.aiState === "chase" ? 2.5 : 2;
         roundRect(ctx, sx, sy, enemy.w, enemy.h, 5);
         ctx.fill();
         ctx.stroke();
