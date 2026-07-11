@@ -52,6 +52,13 @@ function enterChase(enemy) {
     }
 }
 
+function enterReturn(enemy) {
+    enemy.aiState = "return";
+    enemy.pathTimer = 0;
+    enemy.path = [];
+    enemy.pathIndex = 0;
+}
+
 function enterWander(enemy) {
     enemy.aiState = "wander";
     enemy.wanderState = "idle";

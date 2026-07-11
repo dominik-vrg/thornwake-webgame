@@ -2,7 +2,7 @@
 
 const DIAGONAL_COST = Math.SQRT2;
 const NEIGHBOR_OFFSETS = [
-    [1, 0, 1], [-1, 0, 1], [0, 1, 1], [0, -1, -1],
+    [1, 0, 1], [-1, 0, 1], [0, 1, 1], [0, -1, 1],
     [1, 1, DIAGONAL_COST], [1, -1, DIAGONAL_COST], [-1, 1, DIAGONAL_COST], [-1, -1, DIAGONAL_COST],
 ];
 
@@ -19,14 +19,14 @@ function findPath(map, startCol, startRow, endCol, endRow, maxIterations = 2000)
     const key = (c, r) => c + "," + r;
 
     const startNode = { c: startCol, r: startRow, g: 0, h: octileDistance(startCol, startRow, endCol, endRow), parent: null };
-    startNode.f = startNode.h
+    startNode.f = startNode.h;
     
     const open = [startNode];
     const openLookup = new Map([[key(startCol, startRow), startNode]]);
     const closed = new Set();
 
     let iterations = 0;
-    while (open.length > 0){
+    while (open.length > 0) {
         if (++iterations > maxIterations) return null;
 
         let bestIdx = 0;
