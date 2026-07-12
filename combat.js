@@ -11,6 +11,7 @@ const ENEMY_DEFS = {
         wanderSpeed: 30,
         chaseSpeed: 65,
         leashRadius: 48,
+        xpReward: 8,
         w: 22,
         h: 22,
     },
@@ -123,7 +124,8 @@ function rectsOverlap(a, b) {
 
 function performAttack() {
     if (attackCooldownTimer > 0) return;
-    attackCooldownTimer = ATTACK_COOLDOWN;
+    const hasQuickHands = typeof hasPerk === "function" && hasPerk("quickHands");
+    attackCooldownTimer = hasQuickHands ? ATTACK_COOLDOWN * 0.8 : ATTACK_COOLDOWN;
     attackSwingTimer = 0.15;
     
     const hitbox = attackHitbox();
@@ -156,6 +158,8 @@ function killEnemy(enemy) {
     enemy.alive = false;
     enemy.respawnTimer = RESPAWN_TIME;
     showToast(`${enemy.def.name} defeated`);
+
+    if (enemy.def.xpReward && typeof addXP === "function") addXP(enemy.def.xpReward);
 
     const lootId = rollLoot();
     if (lootId) {

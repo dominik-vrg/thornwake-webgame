@@ -24,16 +24,21 @@ const EQUIP_SLOT_DEFS = {
 const BASE_ATTACK = 3;
 const BASE_DEFENSE = 0;
 const BASE_SPEED = player.speed;
+const BASE_MAX_HP = 100;
+const HP_PER_LEVEL = 8;
+const ATTACK_PER_LEVEL = 1;
 
-player.maxHp = 100;
 player.hp = 100;
 player.attack = BASE_ATTACK;
 player.defense = BASE_DEFENSE;
 
 function recalcPlayerStats() {
-    let attack = BASE_ATTACK;
-    let defense = BASE_DEFENSE;
+    const level = player.level || 1;
+    let attack = BASE_ATTACK + (level - 1) * ATTACK_PER_LEVEL;
+    let defense = BASE_DEFENSE + Math.floor((level - 1) / 2);
     let speed = BASE_SPEED;
+    let maxHp = BASE_MAX_HP + (level - 1) * HP_PER_LEVEL;
+
     for (const slot of SLOT_ORDER) {
         const id = equipment[slot];
         if (!id) continue;
@@ -43,9 +48,14 @@ function recalcPlayerStats() {
         defense += def.stats.defense || 0;
         speed += def.stats.speed || 0;
     }
+
+    if (player.perks && player.perks.has("thickenedHide")) defense += 5;
+
     player.attack = attack;
     player.defense = defense;
     player.speed = speed;
+    player.maxHp = maxHp;
+    if (player.hp > player.maxHp) player.hp = player.maxHp;
 }
 
 
@@ -258,7 +268,7 @@ function drawWorldPickups(ctx, camera) {
 function drawHud(ctx) {
     ctx.save();
 
-    const pad = 10, w = 150, h = 54;
+    const pad = 10, w = 160, h = 92;
     ctx.fillStyle = "rgba(20, 16, 15, 0.72)";
     ctx.strokeStyle = "rgba(201, 138, 62, 0.6)";
     ctx.lineWidth = 1;
@@ -266,29 +276,51 @@ function drawHud(ctx) {
     ctx.fill();
     ctx.stroke();
 
-    const barX = pad + 8, barY = pad + 8, barW = w - 16, barH = 8;
+    const innerX = pad + 8, barW = w - 16;
+    let cursorY = pad + 8;
+    const level = player.level || 1;
+
+    ctx.textAlign = "left";
+    ctx.textBaseline = "top";
+    ctx.font = "11px 'Courier New', monospace";
+    ctx.fillStyle = "#e8dcc8";
+    ctx.fillText(`Lv.${level}   HP ${Math.ceil(player.hp)}/${player.maxHp}`, innerX, cursorY);
+    cursorY += 14;
+
+    const hpBarH = 7;
     ctx.fillStyle = "#3a2c22";
-    ctx.fillRect(barX, barY, barW, barH);
+    ctx.fillRect(innerX, cursorY, barW, hpBarH);
     const hpRatio = Math.max(0, player.hp / player.maxHp);
     ctx.fillStyle = hpRatio > 0.3 ? "#7fae5a" : "#c94f4f";
-    ctx.fillRect(barX, barY, barW * hpRatio, barH);
+    ctx.fillRect(innerX, cursorY, barW * hpRatio, hpBarH);
     ctx.strokeStyle = "rgba(0, 0, 0, 0.4)";
-    ctx.strokeRect(barX + 0.5, barY + 0.5, barW - 1, barH - 1);
+    ctx.strokeRect(innerX + 0.5, cursorY + 0.5, barW - 1, hpBarH - 1);
+    cursorY += hpBarH + 6;
+
+    if (typeof xpToNext === "function") {
+        const need = xpToNext(level);
+        const xpRatio = need ? Math.max(0, Math.min(1, player.xp / need)) : 0;
+        const xpBarH = 5;
+        ctx.fillStyle = "#241a30";
+        ctx.fillRect(innerX, cursorY, barW, xpBarH);
+        ctx.fillStyle = "#7ea8c9";
+        ctx.fillRect(innerX, cursorY, barW * xpRatio, xpBarH);
+        ctx.strokeStyle = "rgba(0, 0, 0, 0.4)";
+        ctx.strokeRect(innerX + 0.5, cursorY + 0.5, barW - 1, xpBarH - 1);
+        cursorY += xpBarH + 6;
+    }
 
     ctx.fillStyle = "#e8dcc8";
     ctx.font = "11px 'Courier New', monospace";
-    ctx.textAlign = "left";
-    ctx.textBaseline = "top";
-    ctx.fillText(`HP ${Math.ceil(player.hp)}/${player.maxHp}`, barX, barY + barH + 4);
-    ctx.fillText(`ATK ${player.attack} DEF ${player.defense}`, barX, barY + barH + 18);
+    ctx.fillText(`ATK ${player.attack} DEF ${player.defense}`, innerX, cursorY);
+    cursorY += 14;
 
     ctx.font = "14px sans-serif";
-    let iconX = barX;
-    const iconY = barY + barH + 32;
+    let iconX = innerX;
     for (const slot of SLOT_ORDER) {
         const id = equipment[slot];
         ctx.globalAlpha = id ? 1 : 0.25;
-        ctx.fillText(id ? ITEM_DEFS[id].icon : EQUIP_SLOT_DEFS[slot].placeholder, iconX, iconY);
+        ctx.fillText(id ? ITEM_DEFS[id].icon : EQUIP_SLOT_DEFS[slot].placeholder, iconX, cursorY);
         iconX += 20;
     }
     ctx.globalAlpha = 1;
@@ -347,9 +379,14 @@ function renderInventoryUI() {
     }).join("");
 
     const hpRatio = Math.max(0, player.hp / player.maxHp);
+    const level = player.level || 1;
+    const xpNeed = typeof xpToNext === "function" ? xpToNext(level) : 0;
+    const xpRatio = xpNeed ? Math.max(0, Math.min(1, player.xp / xpNeed)) : 0;
     statsReadoutEl.innerHTML = `
+        <div>Level <b>${level}</b></div>
         <div class="hp-bar-bg"><div class="hp-bar-fill" style="width:${hpRatio * 100}%"></div></div>
         <div>HP <b>${Math.ceil(player.hp)}/${player.maxHp}</b></div>
+        ${xpNeed ? `<div class="xp-bar-bg"><div class="xp-bar-fill" style="width:${xpRatio * 100}%"></div></div><div>XP <b>${player.xp}/${xpNeed}</b></div>` : ""}
         <div>Attack <b>${player.attack}</b> &nbsp; Defense <b>${player.defense}</b></div>
         <div>Speed <b>${player.speed}</b></div>
     `;
