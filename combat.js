@@ -160,6 +160,7 @@ function killEnemy(enemy) {
     showToast(`${enemy.def.name} defeated`);
 
     if (enemy.def.xpReward && typeof addXP === "function") addXP(enemy.def.xpReward);
+    if (typeof updateQuestProgressForKill === "function") updateQuestProgressForKill(enemy.type);
 
     const lootId = rollLoot();
     if (lootId) {

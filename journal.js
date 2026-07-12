@@ -19,11 +19,6 @@ function addLoreEntry(id, title, paragraphs) {
     if (UI.journalOpen) renderJournalUI();
 }
 
-function addQuest(quest) {
-    journal.quests.push(quest);
-    if (UI.journalOpen) renderJournalUI();
-}
-
 addLoreEntry("the-awakening", "The Awakening", OPENING_NARRATION);
 
 //journal ui
@@ -33,18 +28,47 @@ const journalContentEl = document.getElementById("journalContent");
 
 let journalTab = "quests";
 
+const QUEST_STATUS_LABEL = {
+    active: "In Progress",
+    ready: "Ready to turn in!",
+    completed: "Completed",
+};
+
+function questObjectiveLine(def, instance) {
+    const obj = def.objective;
+    if (obj.type === "collect") {
+        const have = Math.min(obj.need, countItemInInventory(obj.itemId));
+        return `${obj.label}: ${have}/${obj.need}`;
+    }
+    if (obj.type === "kill") {
+        return `${obj.label}: ${instance.progress}/${obj.need}`;
+    }
+    return "";
+}
+
 function renderJournalUI() {
     for (const el of journalTabsEl.children) {
         el.classList.toggle("active", el.dataset.tab === journalTab);
     }
 
     if (journalTab === "quests") {
-        journalContentEl.innerHTML = journal.quests.length
-            ? journal.quests.map((q) => `
-            <div class="journal-entry">
-                <div class="journal-entry-title">${q.title}</div>
-                    <div class="journal-entry-body">${q.description || ""}</div>
-                </div>`).join("")
+        const sorted = [...journal.quests].sort((a, b) => (a.status === "completed") - (b.status === "completed"));
+        journalContentEl.innerHTML = sorted.length
+            ? sorted.map((instance) => {
+                const def = QUEST_DEFS[instance.defId];
+                const status = getQuestStatus(instance.defId);
+                return `
+                    <div class="journal-entry quest-entry quest-${status}">
+                        <div class="journal-entry-title">
+                        ${def.title}
+                        <span class="quest-status quest-status-${status}">${QUEST_STATUS_LABEL[status]}</span>
+                        </div>
+                    <div class="journal-entry-body">
+                        <p>${def.description}</p>
+                        <p class="quest-objective">${questObjectiveLine(def, instance)}</p>
+                    </div>
+                </div>`;
+    }).join("")
             : `<div class="journal-empty">No active quests yet. Explore Thornwake and talk to its people to find work.</div>`;
     } else {
         journalContentEl.innerHTML = journal.lore.map((e) => `

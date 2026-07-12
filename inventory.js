@@ -64,6 +64,24 @@ const INV_SIZE = 20;
 const inventory = new Array(INV_SIZE).fill(null); 
 const equipment = { helmet: null, weapon: null, armor: null, boots: null };
 
+function countItemInInventory(id) {
+    return inventory.reduce((sum, slot) => sum + (slot && slot.id === id ? slot.qty : 0), 0);
+}
+
+function removeItemFromInventory(id, qty) {
+    let remaining = qty;
+    for (let i = 0; i < inventory.length && remaining > 0; i++) {
+        const slot = inventory[i];
+        if (slot && slot.id === id) {
+            const take = Math.min(slot.qty, remaining);
+            slot.qty -= take;
+            remaining -= take;
+            if (slot.qty <= 0) inventory[i] = null;
+        }
+    }
+    return remaining === 0;
+}
+
 function addItemToInventory(id, qty) {
     const def = ITEM_DEFS[id];
     let remaining = qty;

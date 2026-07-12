@@ -11,28 +11,92 @@ const NPCS = [
         h: 24,
         color: "#7a5c8e",
         icon: "🌿",
-        met: false,
-        firstLines: [
-            "Oh — it's you. I heard someone was poking around near the old grove.",
-            "The thorns aren't just overgrown. They're changing. Moving, when nothing's touching them.",
-            "I can smell the corruption on the air already, and it's not coming from the ridge like the elders think. It's coming from underneath us.",
-            "I need Wild Herb to prepare anything that might slow this down — the ordinary kind, not the corrupted growth near the crack.",
-            "Bring me what you can find. And watch yourself out there.",
-        ],
-        repeatLines: [
-            "Still in one piece, I see.",
-            "Any luck out there?",
-            "The forest's not getting any quieter.",
-            "Come back when you've got herbs, or trouble.",
-        ],
+        getLines: getMirelaLines,
     },
 ];
 
-//interaction state
+const MIRELA_INTRO_LINES = [
+    "Oh — it's you. I heard someone was poking around near the old grove.",
+    "The thorns aren't just overgrown. They're changing. Moving, when nothing's touching them.",
+    "I can smell the corruption on the air already, and it's not coming from the ridge like the elders think. It's coming from underneath us.",
+    "I need Wild Herb to prepare anything that might slow this down — the ordinary kind, not the corrupted growth near the crack.",
+    "Bring me what you can find. And watch yourself out there.",
+];
+
+const MIRELA_HERB_TURNIN_LINES = [
+    "Wild Herb — perfect, this is exactly what I needed.",
+    "There's another problem, though. Those Thornlings keep trampling the beds faster than they regrow.",
+    "If you could thin out six of them near the grove, I could actually keep a steady supply.",
+    "Here — this is for the herbs. Consider the Thornling work a favor for both of us.",
+];
+
+const MIRELA_THORNLING_TURNIN_LINES = [
+    "You actually did it. Six fewer thorned things skulking around the grove.",
+    "That should buy us some real time. Thank you — truly.",
+    "Here. You've earned this.",
+];
+
+const MIRELA_ALL_DONE_LINES = [
+    "Still in one piece, I see.",
+    "The grove's a little quieter thanks to you.",
+    "I'll let you know if anything else comes up.",
+];
+
+function pickRandomLine(lines) {
+    return lines[Math.floor(Math.random() * lines.length)];
+}
+
+function getMirelaLines() {
+    const herbStatus = getQuestStatus("mirela-herbs");
+
+    if (herbStatus === "inactive") {
+        return {
+            lines: MIRELA_INTRO_LINES,
+            onEnd: () => {
+                startQuest("mirela-herbs");
+                addLoreEntry("mirelas-warning", "Mirela's Warning", [
+                    "Mirela says the corruption isn't coming from the ridge, like the elders believe — it's coming from beneath the grove itself.",
+                    "She's asked for Wild Herb to prepare something that might slow the spread. Ordinary herbs, not the corrupted growth near the crack.",
+                ]);
+            },
+        };
+    }
+
+    if (herbStatus === "active") {
+        const need = QUEST_DEFS["mirela-herbs"].objective.need;
+        const have = countItemInInventory("wildHerb");
+        return { lines: [`I still need Wild Herb - you have ${have} of ${need} so far. Look through the grass and thickets.`], onEnd: null };
+    }
+
+    if (herbStatus === "ready") {
+        return {
+            lines: MIRELA_HERB_TURNIN_LINES,
+            onEnd: () => {
+                turnInQuest("mirela-herbs");
+                startQuest("mirela-thornlings");
+            },
+        };
+    }
+
+    const thornlingStatus = getQuestStatus("mirela-thornlings");
+
+    if (thornlingStatus === "active") {
+        const instance = getQuestInstance("mirela-thornlings");
+        const need = QUEST_DEFS["mirela-thornlings"].objective.need;
+        return { lines: [`${instance.progress} of ${need} Thornlings dealt with. They're thickest near the tree line.`], onEnd: null };
+    }
+
+    if (thornlingStatus === "ready") {
+        return { lines: MIRELA_THORNLING_TURNIN_LINES, onEnd: () => turnInQuest("mirela-thornlings") };
+    }
+
+    return { lines: [pickRandomLine(MIRELA_ALL_DONE_LINES)], onEnd: null };
+}
+
 const INTERACT_RANGE = 44;
 let nearbyNPC = null;
 
-const dialogue = { active: false, npc: null, lines: [], lineIndex: 0 };
+const dialogue = { active: false, npc: null, lines: [], lineIndex: 0, onEnd: null };
 
 function updateNPCs() {
     if (UI.dialogueOpen) return;
@@ -101,12 +165,13 @@ const dialogueNameEl = document.getElementById("dialogueName");
 const dialogueTextEl = document.getElementById("dialogueText");
 
 function startDialogue(npc) {
+    const result = npc.getLines();
+
     dialogue.active = true;
     dialogue.npc = npc;
-    dialogue.lines = npc.met
-        ? [npc.repeatLines[Math.floor(Math.random() * npc.repeatLines.length)]]
-        : npc.firstLines;
+    dialogue.lines = result.lines;
     dialogue.lineIndex = 0;
+    dialogue.onEnd = result.onEnd || null;
 
     UI.dialogueOpen = true;
     dialogueBoxEl.classList.remove("hidden");
@@ -123,21 +188,15 @@ function advanceDialogue() {
 }
 
 function endDialogue() {
-    const npc = dialogue.npc;
-    const wasFirstMeeting = npc && !npc.met;
-    if (npc) npc.met = true;
+    const onEnd = dialogue.onEnd;
 
     dialogue.active = false;
     dialogue.npc = null;
+    dialogue.onEnd = null;
     UI.dialogueOpen = false;
     dialogueBoxEl.classList.add("hidden");
 
-    if (wasFirstMeeting && npc.id === "mirela" && typeof addLoreEntry === "function") {
-        addLoreEntry("mirelas-warning", "Mirela's Warning", [
-            "Mirela says the corruption isn't coming from the ridge, like the elders believe — it's coming from beneath the grove itself.",
-            "She's asked for Wild Herb to prepare something that might slow the spread. Ordinary herbs, not the corrupted growth near the crack.",
-        ]);
-    }
+    if (onEnd) onEnd();
 }
 
 function renderDialogue() {
