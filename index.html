@@ -74,6 +74,21 @@
             </div>
         </div>
 
+        <div id="shopOverlay" class="inv-overlay hidden">
+            <div class="inv-panel shop-panel">
+                <div class="inv-header">
+                    <span class="inv-title">Bram's Wares</span>
+                    <span class="inv-close-hint">Esc to close</span>
+                </div>
+                <div class="shop-gold" id="shopGold">Your Gold: 0</div>
+                <div class="journal-tabs" id="shopTabs">
+                    <button class="tab-btn active" data-tab="buy">Buy</button>
+                    <button class="tab-btn" data-tab="sell">Sell</button>
+                </div>
+                <div class="shop-content" id="shopContent"></div>
+            </div>
+        </div>
+
         <div id="titleScreen" class="title-screen">
             <div class="title-inner">
                 <h1 class="title-heading">Thornwake</h1>
@@ -96,6 +111,7 @@
         <script src="progression.js"></script>
         <script src="quests.js"></script>
         <script src="crafting.js"></script>
+        <script src="shop.js"></script>
         <script src="titlescreen.js"></script>
     </body>
 </html>

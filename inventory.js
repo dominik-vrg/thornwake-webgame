@@ -2,19 +2,19 @@
 
 //item defs
 const ITEM_DEFS = {
-    ironSword: { id: "ironSword", name: "Iron Sword", type: "weapon", slot: "weapon", stackable: false, icon: "⚔️", color: "#b7c2cc", stats: { attack: 6 }, description: "A well-balanced iron blade." },
-    leatherArmor: { id: "leatherArmor", name: "Leather Armor", type: "armor", slot: "armor", stackable: false, icon: "🛡️", color: "#8a6a45", stats: { defense: 5 }, description: "Sturdy leather chestpiece." },
-    ironHelm: { id: "ironHelm", name: "Iron Helm", type: "helmet", slot: "helmet", stackable: false, icon: "🪖", color: "#9aa5ad", stats: { defense: 2 }, description: "Protects your head." },
-    swiftBoots: { id: "swiftBoots", name: "Swift Boots", type: "boots", slot: "boots", stackable: false, icon: "🥾", color: "", stats: { defense: 1, speed: 40 }, description: "Lightweight boots that quicken your step." },
-    healthPotion: { id: "healthPotion", name: "Health Potion", type: "consumable", slot: null, stackable: true, maxStack: 5, icon: "🧪", color: "#c94f4f", effect: { heal: 40 }, description: "Restores 40 HP when consumed." },
-    wildHerb: { id: "wildHerb", name: "Wild Herb", type: "material", slot: null, stackable: true, maxStack: 20, icon: "🌿", color: "#5f9e4a", description: "A common herb. Might be useful for crafting later." },
-    goldCoin: { id: "goldCoin", name: "Gold Coin", type: "material", slot: null, stackable: true, maxStack: 99, icon: "🪙", color: "#d4af37", description: "Shiny currency, accepted nowhere yet." },
-    thornSpike: { id: "thornSpike", name: "Thorn Spike", type: "material", slot: null, stackable: true, maxStack: 20, icon: "🌵", color: "#8a3d5c", description: "A barbed spike shed from a corrupted Thornling." },
-    corruptedSap: { id: "corruptedSap", name: "Corrupted Sap", type: "material", slot: null, stackable: true, maxStack: 20, icon: "🟣", color: "#5c3d8a", description: "Thick, dark sap that shouldn't be moving on its own." },
-    silverLeaf: { id: "silverLeaf", name: "Silver Leaf", type: "material", slot: null, stackable: true, maxStack: 20, icon: "🍃", color: "#9ec9b8", description: "A rare herb with a faint silvery sheen. Stronger than common Wild Herb." },
-    greaterHealthPotion: { id: "greaterHealthPotion", name: "Greater Health Potion", type: "consumable", slot: null, stackable: true, maxStack: 5, icon: "⚗️", color: "#a83a3a", effect: { heal: 70 }, description: "A stronger draught, carefully distilled. Restores 70 HP." },
-    thornforgedBlade: { id: "thornforgedBlade", name: "Thornforged Blade", type: "weapon", slot: "weapon", stackable: false, icon: "🗡️", color: "#6b4a5c", stats: { attack: 12 }, description: "An iron sword reforged around a corrupted thorn core. Considerably sharper." },
-    wardingSalve: { id: "wardingSalve", name: "Warding Salve", type: "consumable", slot: null, stackable: true, maxStack: 5, icon: "✨", color: "#7ea8c9", effect: { heal: 25, ward: 3 }, description: "A thick balm that closes minor wounds and wards off harm entirely for a few moments." },
+    ironSword: { id: "ironSword", name: "Iron Sword", type: "weapon", slot: "weapon", stackable: false, icon: "⚔️", color: "#b7c2cc", stats: { attack: 6 }, value: 15, description: "A well-balanced iron blade." },
+    leatherArmor: { id: "leatherArmor", name: "Leather Armor", type: "armor", slot: "armor", stackable: false, icon: "🛡️", color: "#8a6a45", stats: { defense: 5 }, value: 12, description: "Sturdy leather chestpiece." },
+    ironHelm: { id: "ironHelm", name: "Iron Helm", type: "helmet", slot: "helmet", stackable: false, icon: "🪖", color: "#9aa5ad", stats: { defense: 2 }, value: 8, description: "Protects your head." },
+    swiftBoots: { id: "swiftBoots", name: "Swift Boots", type: "boots", slot: "boots", stackable: false, icon: "🥾", color: "#6b4a30", stats: { defense: 1, speed: 40 }, value: 10, description: "Lightweight boots that quicken your step." },
+    healthPotion: { id: "healthPotion", name: "Health Potion", type: "consumable", slot: null, stackable: true, maxStack: 5, icon: "🧪", color: "#c94f4f", effect: { heal: 40 }, value: 4, description: "Restores 40 HP when consumed." },
+    wildHerb: { id: "wildHerb", name: "Wild Herb", type: "material", slot: null, stackable: true, maxStack: 20, icon: "🌿", color: "#5f9e4a", value: 1, description: "A common herb. Might be useful for crafting later." },
+    goldCoin: { id: "goldCoin", name: "Gold Coin", type: "material", slot: null, stackable: true, maxStack: 99, icon: "🪙", color: "#d4af37", description: "Shiny currency." },
+    thornSpike: { id: "thornSpike", name: "Thorn Spike", type: "material", slot: null, stackable: true, maxStack: 20, icon: "🌵", color: "#8a3d5c", value: 2, description: "A barbed spike shed from a corrupted Thornling." },
+    corruptedSap: { id: "corruptedSap", name: "Corrupted Sap", type: "material", slot: null, stackable: true, maxStack: 20, icon: "🟣", color: "#5c3d8a", value: 5, description: "Thick, dark sap that shouldn't be moving on its own." },
+    silverLeaf: { id: "silverLeaf", name: "Silver Leaf", type: "material", slot: null, stackable: true, maxStack: 20, icon: "🍃", color: "#9ec9b8", value: 3, description: "A rare herb with a faint silvery sheen. Stronger than common Wild Herb." },
+    greaterHealthPotion: { id: "greaterHealthPotion", name: "Greater Health Potion", type: "consumable", slot: null, stackable: true, maxStack: 5, icon: "⚗️", color: "#a83a3a", effect: { heal: 70 }, value: 10, description: "A stronger draught, carefully distilled. Restores 70 HP." },
+    thornforgedBlade: { id: "thornforgedBlade", name: "Thornforged Blade", type: "weapon", slot: "weapon", stackable: false, icon: "🗡️", color: "#6b4a5c", stats: { attack: 12 }, value: 30, description: "An iron sword reforged around a corrupted thorn core. Considerably sharper." },
+    wardingSalve: { id: "wardingSalve", name: "Warding Salve", type: "consumable", slot: null, stackable: true, maxStack: 5, icon: "✨", color: "#7ea8c9", effect: { heal: 25, ward: 3 }, value: 8, description: "A thick balm that closes minor wounds and wards off harm entirely for a few moments." },
 };
 
 const SLOT_ORDER = ["helmet", "weapon", "armor", "boots"];
@@ -216,7 +216,7 @@ function useFromInventory(index) {
         }
         effects.push(`warded ${def.effect.ward}s`);
     }
-        showToast(`Used ${def.name}${effects.length ? " - " + effects.join(", ") : ""}`);
+        showToast(`Used ${def.name}${effects.length ? " — " + effects.join(", ") : ""}`);
 
     slotItem.qty -= 1;
     if (slotItem.qty <= 0) inventory[index] = null;
@@ -584,6 +584,7 @@ function toggleInventory(force) {
     if (UI.inventoryOpen) {
         if (UI.journalOpen && typeof toggleJournal === "function") toggleJournal(false);
         if (UI.craftingOpen && typeof toggleCrafting === "function") toggleCrafting(false);
+        if (UI.shopOpen && typeof toggleShop === "function") toggleShop(false);
         selection = null;
         renderInventoryUI();
     }

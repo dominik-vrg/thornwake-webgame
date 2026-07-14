@@ -13,6 +13,18 @@ const NPCS = [
         icon: "🌿",
         getLines: getMirelaLines,
     },
+    {
+        id: "bram",
+        name: "Bram",
+        title: "Peddler",
+        x: 25 * TILE_SIZE + 4,
+        y: 3 * TILE_SIZE + 4,
+        w: 24,
+        h: 24,
+        color: "#8a7048",
+        icon: "🪙",
+        getLines: getBramLines,
+    },
 ];
 
 const MIRELA_INTRO_LINES = [
@@ -93,6 +105,16 @@ function getMirelaLines() {
     return { lines: [pickRandomLine(MIRELA_ALL_DONE_LINES)], onEnd: null };
 }
 
+const BRAM_LINES = [
+    "Wares, if you've got the coin for them.",
+    "Everything's fresher than it looks. Mostly.",
+    "Careful out there — everything's on edge since the ground split.",
+    "Gold's gold, corruption or no. Let's trade.",
+];
+
+function getBramLines() {
+    return { lines: [pickRandomLine(BRAM_LINES)], onEnd: () => toggleShop(true) };
+}
 const INTERACT_RANGE = 44;
 let nearbyNPC = null;
 
@@ -219,7 +241,7 @@ window.addEventListener("keydown", (e) => {
         return;
     }
 
-    if (k === "e" && nearbyNPC && !UI.inventoryOpen && !UI.journalOpen) {
+    if (k === "e" && nearbyNPC && !UI.inventoryOpen && !UI.journalOpen && !UI.craftingOpen && !UI.shopOpen) {
         startDialogue(nearbyNPC);
     }
 });

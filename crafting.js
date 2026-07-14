@@ -93,6 +93,7 @@ function toggleCrafting(force) {
     if (UI.craftingOpen) {
         if (UI.inventoryOpen) toggleInventory(false);
         if (UI.journalOpen) toggleJournal(false);
+        if (UI.shopOpen && typeof toggleShop === "function") toggleShop(false);
         renderCraftingUI();
     }
 }

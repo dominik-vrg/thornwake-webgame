@@ -96,6 +96,7 @@ function toggleJournal(force) {
     if (UI.journalOpen) {
         if (UI.inventoryOpen && typeof toggleInventory === "function") toggleInventory(false);
         if (UI.craftingOpen && typeof toggleCrafting === "function") toggleCrafting(false);
+        if (UI.shopOpen && typeof toggleShop === "function") toggleShop(false);
         renderJournalUI();
     }
 }
