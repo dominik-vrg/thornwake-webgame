@@ -95,6 +95,7 @@ function toggleJournal(force) {
     journalOverlayEl.classList.toggle("hidden", !UI.journalOpen);
     if (UI.journalOpen) {
         if (UI.inventoryOpen && typeof toggleInventory === "function") toggleInventory(false);
+        if (UI.craftingOpen && typeof toggleCrafting === "function") toggleCrafting(false);
         renderJournalUI();
     }
 }

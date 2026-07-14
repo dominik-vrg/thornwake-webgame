@@ -20,7 +20,7 @@
                 </div>
             </div>
             <div class="hud">
-                <div class="keys">Move: <b>WASD / Arrows</b> &nbsp;|&nbsp; Talk: <b>E</b> &nbsp;|&nbsp; Inventory: <b>Tab</b> &nbsp;|&nbsp; Journal: <b>J</b> &nbsp;|&nbsp; Debug: <b>I</b></div>
+                <div class="keys">Move: <b>WASD / Arrows</b> &nbsp;|&nbsp; Talk: <b>E</b> &nbsp;|&nbsp; Inventory: <b>Tab</b> &nbsp;|&nbsp; Journal: <b>J</b> &nbsp;|&nbsp; Inventory: <b>C</b> &nbsp;|&nbsp; Debug: <b>I</b></div>
                 <div class="debug" id="debugLine">x:0 y:0 tile:(0, 0) fps:0</div>
             </div>
             <div class="footnote">no libraries and engine used</div>
@@ -64,6 +64,16 @@
             </div>
         </div>
 
+        <div id="craftingOverlay" class="inv-overlay hidden">
+            <div class="inv-panel crafting-panel">
+                <div class="inv-header">
+                    <span class="inv-title">Crafting</span>
+                    <span class="inv-close-hint">C / Esc to close</span>
+                </div>
+                <div class="recipe-list" id="recipeList"></div>
+            </div>
+        </div>
+
         <div id="titleScreen" class="title-screen">
             <div class="title-inner">
                 <h1 class="title-heading">Thornwake</h1>
@@ -85,6 +95,7 @@
         <script src="combat.js"></script>
         <script src="progression.js"></script>
         <script src="quests.js"></script>
+        <script src="crafting.js"></script>
         <script src="titlescreen.js"></script>
     </body>
 </html>

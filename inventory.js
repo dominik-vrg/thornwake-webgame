@@ -6,9 +6,15 @@ const ITEM_DEFS = {
     leatherArmor: { id: "leatherArmor", name: "Leather Armor", type: "armor", slot: "armor", stackable: false, icon: "🛡️", color: "#8a6a45", stats: { defense: 5 }, description: "Sturdy leather chestpiece." },
     ironHelm: { id: "ironHelm", name: "Iron Helm", type: "helmet", slot: "helmet", stackable: false, icon: "🪖", color: "#9aa5ad", stats: { defense: 2 }, description: "Protects your head." },
     swiftBoots: { id: "swiftBoots", name: "Swift Boots", type: "boots", slot: "boots", stackable: false, icon: "🥾", color: "", stats: { defense: 1, speed: 40 }, description: "Lightweight boots that quicken your step." },
-    healthPotion: { id: "healthPotion", name: "Health Potion", type: "consumable", slot: "null", stackable: true, maxStack: 5, icon: "🧪", color: "#c94f4f", effect: { heal: 40 }, description: "Restores 40 HP when consumed." },
-    wildHerb: { id: "wildHerb", name: "Wild Herb", type: "material", slot: "null", stackable: true, maxStack: 20, icon: "🌿", color: "#5f9e4a", description: "A common herb. Might be useful for crafting later." },
-    goldCoin: { id: "goldCoin", name: "Gold Coin", type: "material", slot: "null", stackable: true, maxStack: 99, icon: "🪙", color: "#d4af37", description: "Shiny currency, accepted nowhere yet." },
+    healthPotion: { id: "healthPotion", name: "Health Potion", type: "consumable", slot: null, stackable: true, maxStack: 5, icon: "🧪", color: "#c94f4f", effect: { heal: 40 }, description: "Restores 40 HP when consumed." },
+    wildHerb: { id: "wildHerb", name: "Wild Herb", type: "material", slot: null, stackable: true, maxStack: 20, icon: "🌿", color: "#5f9e4a", description: "A common herb. Might be useful for crafting later." },
+    goldCoin: { id: "goldCoin", name: "Gold Coin", type: "material", slot: null, stackable: true, maxStack: 99, icon: "🪙", color: "#d4af37", description: "Shiny currency, accepted nowhere yet." },
+    thornSpike: { id: "thornSpike", name: "Thorn Spike", type: "material", slot: null, stackable: true, maxStack: 20, icon: "🌵", color: "#8a3d5c", description: "A barbed spike shed from a corrupted Thornling." },
+    corruptedSap: { id: "corruptedSap", name: "Corrupted Sap", type: "material", slot: null, stackable: true, maxStack: 20, icon: "🟣", color: "#5c3d8a", description: "Thick, dark sap that shouldn't be moving on its own." },
+    silverLeaf: { id: "silverLeaf", name: "Silver Leaf", type: "material", slot: null, stackable: true, maxStack: 20, icon: "🍃", color: "#9ec9b8", description: "A rare herb with a faint silvery sheen. Stronger than common Wild Herb." },
+    greaterHealthPotion: { id: "greaterHealthPotion", name: "Greater Health Potion", type: "consumable", slot: null, stackable: true, maxStack: 5, icon: "⚗️", color: "#a83a3a", effect: { heal: 70 }, description: "A stronger draught, carefully distilled. Restores 70 HP." },
+    thornforgedBlade: { id: "thornforgedBlade", name: "Thornforged Blade", type: "weapon", slot: "weapon", stackable: false, icon: "🗡️", color: "#6b4a5c", stats: { attack: 12 }, description: "An iron sword reforged around a corrupted thorn core. Considerably sharper." },
+    wardingSalve: { id: "wardingSalve", name: "Warding Salve", type: "consumable", slot: null, stackable: true, maxStack: 5, icon: "✨", color: "#7ea8c9", effect: { heal: 25, ward: 3 }, description: "A thick balm that closes minor wounds and wards off harm entirely for a few moments." },
 };
 
 const SLOT_ORDER = ["helmet", "weapon", "armor", "boots"];
@@ -68,6 +74,14 @@ function countItemInInventory(id) {
     return inventory.reduce((sum, slot) => sum + (slot && slot.id === id ? slot.qty : 0), 0);
 }
 
+function totalItemAvailable(id) {
+    let count = countItemInInventory(id);
+    for (const slot of SLOT_ORDER) {
+        if (equipment[slot] === id) count += 1;
+    }
+    return count;
+}
+
 function removeItemFromInventory(id, qty) {
     let remaining = qty;
     for (let i = 0; i < inventory.length && remaining > 0; i++) {
@@ -79,6 +93,30 @@ function removeItemFromInventory(id, qty) {
             if (slot.qty <= 0) inventory[i] = null;
         }
     }
+    return remaining === 0;
+}
+
+function consumeItemAnywhere(id, qty) {
+    let remaining = qty;
+    for (let i = 0; i < inventory.length && remaining > 0; i++) {
+        const slot = inventory[i];
+        if (slot && slot.id === id) {
+            const take = Math.min(slot.qty, remaining);
+            slot.qty -= take;
+            remaining -= take;
+            if (slot.qty <= 0) inventory[i] = null;
+        }
+    }
+    if (remaining > 0) {
+        for (const slotType of SLOT_ORDER) {
+            if (remaining <= 0) break;
+            if (equipment[slotType] === id) {
+                equipment[slotType] = null;
+                remaining -= 1;
+                recalcPlayerStats();
+        }
+    }
+}
     return remaining === 0;
 }
 
@@ -167,10 +205,19 @@ function useFromInventory(index) {
     const def = ITEM_DEFS[slotItem.id];
     if (def.type !== "consumable") { showToast(`${def.name} can't be used.`); return; }
 
+    const effects = [];
     if (def.effect && def.effect.heal) {
         player.hp = Math.min(player.maxHp, player.hp + def.effect.heal);
-        showToast(`Used ${def.name} — +${def.effect.heal} HP`);
+        effects.push(`+${def.effect.heal} HP`);
     }
+    if (def.effect && def.effect.ward) {
+        if (typeof playerInvulnTimer !== "undefined") {
+            playerInvulnTimer = Math.max(playerInvulnTimer, def.effect.ward);
+        }
+        effects.push(`warded ${def.effect.ward}s`);
+    }
+        showToast(`Used ${def.name}${effects.length ? " - " + effects.join(", ") : ""}`);
+
     slotItem.qty -= 1;
     if (slotItem.qty <= 0) inventory[index] = null;
     selection = null;
@@ -205,6 +252,8 @@ const START_TILES = [
     { id: "wildHerb",     c: 27, r: 6  },
     { id: "goldCoin",     c: 5,  r: 12 },
     { id: "goldCoin",     c: 21, r: 17 },
+    { id: "silverLeaf",   c: 28, r: 10 },
+    { id: "silverLeaf",   c: 15, r: 17 },
 ];
 
 let worldPickups = START_TILES.map((t) => ({
@@ -348,6 +397,7 @@ function drawHud(ctx) {
     ctx.fillText("[Tab] Inventory", VIEW_W - 10, 10);
     ctx.fillText("[J] Journal", VIEW_W - 10, 24);
     ctx.fillText("[Space] Attack", VIEW_W - 10, 38);
+    ctx.fillText("[C] Craft", VIEW_W - 10, 52);
 
     ctx.restore();
 }
@@ -533,6 +583,7 @@ function toggleInventory(force) {
     overlayEl.classList.toggle("hidden", !UI.inventoryOpen);
     if (UI.inventoryOpen) {
         if (UI.journalOpen && typeof toggleJournal === "function") toggleJournal(false);
+        if (UI.craftingOpen && typeof toggleCrafting === "function") toggleCrafting(false);
         selection = null;
         renderInventoryUI();
     }

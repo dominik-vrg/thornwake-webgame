@@ -29,6 +29,8 @@ const ENEMY_SPAWNS = [
 const LOOT_TABLE = [
     { id: "wildHerb", weight: 5 },
     { id: "goldCoin", weight: 4 },
+    { id: "thornSpike", weight: 3 },
+    { id: "corruptedSap", weight: 1 },
     { id: null, weight: 3 },
 ];
 
