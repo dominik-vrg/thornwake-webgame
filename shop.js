@@ -125,6 +125,7 @@ function toggleShop(force) {
         if (UI.inventoryOpen) toggleInventory(false);
         if (UI.journalOpen) toggleJournal(false);
         if (UI.craftingOpen) toggleCrafting(false);
+        if (UI.blacksmithOpen && typeof toggleBlacksmith === "function") toggleBlacksmith(false);
         renderShopUI();
     }
 }

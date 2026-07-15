@@ -25,6 +25,18 @@ const NPCS = [
         icon: "🪙",
         getLines: getBramLines,
     },
+    {
+        id: "dorn",
+        name: "Dorn",
+        title: "Blacksmith",
+        x: 10 * TILE_SIZE + 4,
+        y: 15 * TILE_SIZE + 4,
+        w: 24,
+        h: 24,
+        color: "#6a5a52",
+        icon: "🔨",
+        getLines: getDornLines,
+    },
 ];
 
 const MIRELA_INTRO_LINES = [
@@ -77,7 +89,7 @@ function getMirelaLines() {
     if (herbStatus === "active") {
         const need = QUEST_DEFS["mirela-herbs"].objective.need;
         const have = countItemInInventory("wildHerb");
-        return { lines: [`I still need Wild Herb - you have ${have} of ${need} so far. Look through the grass and thickets.`], onEnd: null };
+        return { lines: [`I still need Wild Herb — you have ${have} of ${need} so far. Look through the grass and thickets.`], onEnd: null };
     }
 
     if (herbStatus === "ready") {
@@ -114,6 +126,16 @@ const BRAM_LINES = [
 
 function getBramLines() {
     return { lines: [pickRandomLine(BRAM_LINES)], onEnd: () => toggleShop(true) };
+}
+const DORN_LINES = [
+    "Bring me good steel, or don't bother.",
+    "The corruption's in the ore now too, I'd wager. Explains a lot.",
+    "I can make good gear better. Can't make bad gear good, mind.",
+    "Gold and grit — that's what upgrades cost.",
+];
+
+function getDornLines() {
+    return { lines: [pickRandomLine(DORN_LINES)], onEnd: () => toggleBlacksmith(true) };
 }
 const INTERACT_RANGE = 44;
 let nearbyNPC = null;
@@ -241,7 +263,7 @@ window.addEventListener("keydown", (e) => {
         return;
     }
 
-    if (k === "e" && nearbyNPC && !UI.inventoryOpen && !UI.journalOpen && !UI.craftingOpen && !UI.shopOpen) {
+    if (k === "e" && nearbyNPC && !UI.inventoryOpen && !UI.journalOpen && !UI.craftingOpen && !UI.shopOpen && !UI.blacksmithOpen) {
         startDialogue(nearbyNPC);
     }
 });

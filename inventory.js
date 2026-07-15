@@ -15,6 +15,10 @@ const ITEM_DEFS = {
     greaterHealthPotion: { id: "greaterHealthPotion", name: "Greater Health Potion", type: "consumable", slot: null, stackable: true, maxStack: 5, icon: "⚗️", color: "#a83a3a", effect: { heal: 70 }, value: 10, description: "A stronger draught, carefully distilled. Restores 70 HP." },
     thornforgedBlade: { id: "thornforgedBlade", name: "Thornforged Blade", type: "weapon", slot: "weapon", stackable: false, icon: "🗡️", color: "#6b4a5c", stats: { attack: 12 }, value: 30, description: "An iron sword reforged around a corrupted thorn core. Considerably sharper." },
     wardingSalve: { id: "wardingSalve", name: "Warding Salve", type: "consumable", slot: null, stackable: true, maxStack: 5, icon: "✨", color: "#7ea8c9", effect: { heal: 25, ward: 3 }, value: 8, description: "A thick balm that closes minor wounds and wards off harm entirely for a few moments." },
+    reinforcedLeatherArmor: { id: "reinforcedLeatherArmor", name: "Reinforced Leather Armor", type: "armor", slot: "armor", stackable: false, icon: "🛡️", color: "#5c7a4a", stats: { defense: 9 }, value: 25, description: "Leather Armor reinforced with thorn-hardened stitching." },
+    wardedHelm: { id: "wardedHelm", name: "Warded Helm", type: "helmet", slot: "helmet", stackable: false, icon: "🪖", color: "#6a7a9a", stats: { defense: 5 }, value: 28, description: "An Iron Helm warded against the corruption itself." },
+    windrunnerBoots: { id: "windrunnerBoots", name: "Windrunner Boots", type: "boots", slot: "boots", stackable: false, icon: "🥾", color: "#4a8a6b", stats: { defense: 2, speed: 70 }, value: 22, description: "Swift Boots, lightened further until they barely touch the ground." },
+    emberthornBlade: { id: "emberthornBlade", name: "Emberthorn Blade", type: "weapon", slot: "weapon", stackable: false, icon: "🗡️", color: "#a8563a", stats: { attack: 18 }, value: 45, description: "A Thornforged Blade tempered in corrupted sap until it runs hot." },
 };
 
 const SLOT_ORDER = ["helmet", "weapon", "armor", "boots"];
@@ -585,6 +589,7 @@ function toggleInventory(force) {
         if (UI.journalOpen && typeof toggleJournal === "function") toggleJournal(false);
         if (UI.craftingOpen && typeof toggleCrafting === "function") toggleCrafting(false);
         if (UI.shopOpen && typeof toggleShop === "function") toggleShop(false);
+        if (UI.blacksmithOpen && typeof toggleBlacksmith === "function") toggleBlacksmith(false);
         selection = null;
         renderInventoryUI();
     }

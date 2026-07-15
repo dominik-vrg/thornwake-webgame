@@ -119,7 +119,7 @@ function moveWithCollision(map, entity, dx, dy) {
     }
 }
 
-const UI = { inventoryOpen: false, journalOpen: false, dialogueOpen: false, craftingOpen: false, shopOpen: false, gameStarted: false };
+const UI = { inventoryOpen: false, journalOpen: false, dialogueOpen: false, craftingOpen: false, shopOpen: false, blacksmithOpen: false, gameStarted: false };
 
 //player
 const player = {
@@ -261,7 +261,7 @@ function tick(now) {
 }
 
 function update(dt) {
-    const menuOpen = UI.inventoryOpen || UI.journalOpen || UI.dialogueOpen || UI.craftingOpen || UI.shopOpen;
+    const menuOpen = UI.inventoryOpen || UI.journalOpen || UI.dialogueOpen || UI.craftingOpen || UI.shopOpen || UI.blacksmithOpen;
 
     if (UI.gameStarted && !menuOpen) {
         const { dx, dy } = readMovementInput();
