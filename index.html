@@ -20,7 +20,7 @@
                 </div>
             </div>
             <div class="hud">
-                <div class="keys">Move: <b>WASD / Arrows</b> &nbsp;|&nbsp; Talk: <b>E</b> &nbsp;|&nbsp; Inventory: <b>Tab</b> &nbsp;|&nbsp; Journal: <b>J</b> &nbsp;|&nbsp; Inventory: <b>C</b> &nbsp;|&nbsp; Debug: <b>I</b></div>
+                <div class="keys">Move: <b>WASD / Arrows</b> &nbsp;|&nbsp; Talk: <b>E</b> &nbsp;|&nbsp; Inventory: <b>Tab</b> &nbsp;|&nbsp; Journal: <b>J</b> &nbsp;|&nbsp; Crafting: <b>C</b> &nbsp;|&nbsp; Mute: <b>M</b> &nbsp;|&nbsp; Debug: <b>I</b></div>
                 <div class="debug" id="debugLine">x:0 y:0 tile:(0, 0) fps:0</div>
             </div>
             <div class="footnote">no libraries and engine used</div>
@@ -106,8 +106,44 @@
                     <path d="M0 8 Q 20 2, 35 8 T 70 8 Q 85 14, 100 8 T 130 8 Q 145 2, 165 8 T 200 8" fill="none" stroke="#6f9e5e" stroke-width="1.5"></path>
                 </svg>
                 <div class="title-narration" id="titleNarration"></div>
-                <button id="beginBtn" class="tool-btn begin-btn">Enter the Forest</button>
-                <div class="title-hint">Press Enter or click to begin</div>
+
+                <div class="title-menu">
+                    <div class="difficulty-row">
+                        <span class="menu-label">Difficulty</span>
+                        <div class="difficulty-options" id="difficultyOptions">
+                            <button type="button" class="diff-btn" data-difficulty="easy">Easy</button>
+                            <button type="button" class="diff-btn active" data-difficulty="normal">Normal</button>
+                            <button type="button" class="diff-btn" data-difficulty="hard">Hard</button>
+                        </div>
+                    </div>
+
+                    <div class="title-buttons">
+                        <button id="continueBtnTitle" class="tool-btn begin-btn hidden">Continue</button>
+                        <button id="newGameBtn" class="tool-btn begin-btn">New Game</button>
+                    </div>
+
+                    <button id="muteToggleBtn" type="button" class="tool-btn secondary mute-btn">🔊 Sound On</button>
+                </div>
+
+                <div class="title-hint" id="titleHint">Press Enter to begin</div>
+            </div>
+        </div>
+
+        <div id="gameOverScreen" class="endstate-screen gameover-screen hidden">
+            <div class="endstate-inner">
+                <h1 class="endstate-heading">You Fell</h1>
+                <div class="endstate-narration" id="gameOverText"></div>
+                <button id="respawnBtn" class="tool-btn begin-btn">Wake Up</button>
+                <div class="title-hint">Press Enter or click to continue</div>
+            </div>
+        </div>
+
+        <div id="victoryScreen" class="endstate-screen victory-screen hidden">
+            <div class="endstate-inner">
+                <h1 class="endstate-heading">Thornwake Stands</h1>
+                <div class="endstate-narration" id="victoryNarration"></div>
+                <button id="continueBtn" class="tool-btn begin-btn">Continue Exploring</button>
+                <div class="title-hint">Press Enter or Esc to continue</div>
             </div>
         </div>
         
@@ -123,6 +159,12 @@
         <script src="crafting.js"></script>
         <script src="shop.js"></script>
         <script src="blacksmith.js"></script>
+        <script src="zones.js"></script>
+        <script src="boss.js"></script>
+        <script src="fx.js"></script>
+        <script src="audio.js"></script>
+        <script src="endstates.js"></script>
+        <script src="save.js"></script>
         <script src="titlescreen.js"></script>
     </body>
 </html>

@@ -32,6 +32,9 @@ function levelUp() {
 
     showToast(`Level up! You are now level ${player.level}.`);
     spawnDamagePopup(player.x + player.w / 2, player.y - 22, "LEVEL UP!", "#f2d98a");
+    if (typeof playSfx === "function") playSfx("levelUp");
+    if (typeof triggerShake === "function") triggerShake(3, 0.2);
+    if (typeof saveGame === "function") saveGame();
 
     const perk = PERKS[player.level];
     if (perk) {

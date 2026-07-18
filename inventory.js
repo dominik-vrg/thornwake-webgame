@@ -19,6 +19,7 @@ const ITEM_DEFS = {
     wardedHelm: { id: "wardedHelm", name: "Warded Helm", type: "helmet", slot: "helmet", stackable: false, icon: "🪖", color: "#6a7a9a", stats: { defense: 5 }, value: 28, description: "An Iron Helm warded against the corruption itself." },
     windrunnerBoots: { id: "windrunnerBoots", name: "Windrunner Boots", type: "boots", slot: "boots", stackable: false, icon: "🥾", color: "#4a8a6b", stats: { defense: 2, speed: 70 }, value: 22, description: "Swift Boots, lightened further until they barely touch the ground." },
     emberthornBlade: { id: "emberthornBlade", name: "Emberthorn Blade", type: "weapon", slot: "weapon", stackable: false, icon: "🗡️", color: "#a8563a", stats: { attack: 18 }, value: 45, description: "A Thornforged Blade tempered in corrupted sap until it runs hot." },
+    heartseedCharm: { id: "heartseedCharm", name: "Heartseed Charm", type: "trophy", slot: null, stackable: false, icon: "❤️‍🔥", color: "#7a1f3d", description: "A single seed pulled from the stilled Heart of Thornwake. It's warm to the touch, like it's still deciding what to become." },
 };
 
 const SLOT_ORDER = ["helmet", "weapon", "armor", "boots"];
@@ -60,6 +61,7 @@ function recalcPlayerStats() {
     }
 
     if (player.perks && player.perks.has("thickenedHide")) defense += 5;
+    if (player.perks && player.perks.has("heartbound")) { maxHp += 25; attack += 4; }
 
     player.attack = attack;
     player.defense = defense;
@@ -260,14 +262,19 @@ const START_TILES = [
     { id: "silverLeaf",   c: 15, r: 17 },
 ];
 
-let worldPickups = START_TILES.map((t) => ({
-    id: t.id,
-    x: t.c * TILE_SIZE + TILE_SIZE / 2,
-    y: t.r * TILE_SIZE + TILE_SIZE / 2,
-    blocked: false,
-    collected: false,
-    bobPhase: Math.random() * Math.PI * 2,
-}));
+function buildPickups(tiles) {
+    return tiles.map((t) => ({
+        id: t.id,
+        x: t.c * TILE_SIZE + TILE_SIZE / 2,
+        y: t.r * TILE_SIZE + TILE_SIZE / 2,
+        blocked: false,
+        collected: false,
+        bobPhase: Math.random() * Math.PI * 2,
+    }));
+}
+
+
+let worldPickups = buildPickups(START_TILES);
 
 function spawnPickupNearPlayer(itemId) {
     worldPickups.push({
@@ -294,6 +301,7 @@ function updateWorldPickups(dt) {
                 if (addItemToInventory(p.id, 1)) {
                     p.collected = true;
                     showToast(`Picked up ${def.icon} ${def.name}`);
+                    if (typeof playSfx === "function") playSfx("pickup");
                 } else {
                     p.blocked = true;
                     showToast("Inventory full!");
@@ -585,6 +593,7 @@ overlayEl.addEventListener("click", (e) => {
 function toggleInventory(force) {
     UI.inventoryOpen = typeof force === "boolean" ? force : !UI.inventoryOpen;
     overlayEl.classList.toggle("hidden", !UI.inventoryOpen);
+    if (typeof playSfx === "function") playSfx(UI.inventoryOpen ? "uiOpen" : "uiClose");
     if (UI.inventoryOpen) {
         if (UI.journalOpen && typeof toggleJournal === "function") toggleJournal(false);
         if (UI.craftingOpen && typeof toggleCrafting === "function") toggleCrafting(false);
@@ -596,7 +605,7 @@ function toggleInventory(force) {
 }
 
 window.addEventListener("keydown", (e) => {
-    if (!UI.gameStarted || UI.dialogueOpen) return;
+    if (!UI.gameStarted || UI.dialogueOpen || UI.gameOverOpen || UI.victoryOpen) return;
     const k = e.key.toLowerCase();
     if (k === "tab") { e.preventDefault(); toggleInventory(); }
     else if (k === "escape" && UI.inventoryOpen) toggleInventory(false);

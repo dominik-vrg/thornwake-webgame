@@ -111,6 +111,7 @@ blacksmithOverlayEl.addEventListener("click", (e) => {
 function toggleBlacksmith(force) {
     UI.blacksmithOpen = typeof force === "boolean" ? force : !UI.blacksmithOpen;
     blacksmithOverlayEl.classList.toggle("hidden", !UI.blacksmithOpen);
+    if (typeof playSfx === "function") playSfx(UI.blacksmithOpen ? "uiOpen" : "uiClose");
     if (UI.blacksmithOpen) {
         if (UI.inventoryOpen) toggleInventory(false);
         if (UI.journalOpen) toggleJournal(false);
@@ -121,6 +122,6 @@ function toggleBlacksmith(force) {
 }
 
 window.addEventListener("keydown", (e) => {
-    if (!UI.gameStarted) return;
+    if (!UI.gameStarted || UI.gameOverOpen || UI.victoryOpen) return;
     if (e.key.toLowerCase() === "escape" && UI.blacksmithOpen) toggleBlacksmith(false);
 });

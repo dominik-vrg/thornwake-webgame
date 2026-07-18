@@ -59,6 +59,8 @@ function turnInQuest(defId) {
 
     grantQuestRewards(def.rewards);
     showToast(`Quest complete: ${def.title}`);
+    if (typeof playSfx === "function") playSfx("questComplete");
+    if (typeof saveGame === "function") saveGame();
     if (UI.journalOpen) renderJournalUI();
     return true;
 }

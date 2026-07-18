@@ -93,6 +93,7 @@ journalOverlayEl.addEventListener("click", (e) => {
 function toggleJournal(force) {
     UI.journalOpen = typeof force === "boolean" ? force : !UI.journalOpen;
     journalOverlayEl.classList.toggle("hidden", !UI.journalOpen);
+    if (typeof playSfx === "function") playSfx(UI.journalOpen ? "uiOpen" : "uiClose");
     if (UI.journalOpen) {
         if (UI.inventoryOpen && typeof toggleInventory === "function") toggleInventory(false);
         if (UI.craftingOpen && typeof toggleCrafting === "function") toggleCrafting(false);
@@ -103,7 +104,7 @@ function toggleJournal(force) {
 }
 
 window.addEventListener("keydown", (e) => {
-    if (!UI.gameStarted || UI.dialogueOpen) return;
+    if (!UI.gameStarted || UI.dialogueOpen || UI.gameOverOpen || UI.victoryOpen) return;
     const k = e.key.toLowerCase();
     if (k === "j") { e.preventDefault(); toggleJournal(); }
     else if (k === "escape" && UI.journalOpen) toggleJournal(false);

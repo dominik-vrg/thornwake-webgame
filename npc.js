@@ -1,6 +1,6 @@
 "use strict";
 
-const NPCS = [
+let NPCS = [
     {
         id: "mirela",
         name: "Mirela",
@@ -137,6 +137,49 @@ const DORN_LINES = [
 function getDornLines() {
     return { lines: [pickRandomLine(DORN_LINES)], onEnd: () => toggleBlacksmith(true) };
 }
+
+const ALDRIC_INTRO_LINES = [
+    "You shouldn't be out here without a reason. Then again, neither should I.",
+    "Aldric. I used to log this treeline before the ground split. Now I just... watch it.",
+    "The corruption gets worse the deeper you go. Past the grove there's something old down there, and it isn't sleeping anymore.",
+    "If you're set on going further, get stronger first. Whatever's down there won't care how brave you are.",
+];
+
+const ALDRIC_REPEAT_LINES = [
+    "Watch the tree line. Things move in it that shouldn't.",
+    "Still standing, I see. Good.",
+    "The deeper you go, the less this forest remembers being a forest.",
+];
+
+let aldricMet = false;
+
+function getAldricLines() {
+    if (!aldricMet) {
+        aldricMet = true;
+        return {
+            lines: ALDRIC_INTRO_LINES,
+            onEnd: () => addLoreEntry("aldrics-warning", "Aldric's Warning", [
+                "A warden named Aldric still watches the treeline at the grove's edge, long after everyone else pulled back.",
+                "He warns that something old lies deeper in the corruption, and that it isn't sleeping anymore.",
+            ]),
+        };
+    }
+    return { lines: [pickRandomLine(ALDRIC_REPEAT_LINES)], onEnd: null };
+}
+
+const ALDRIC_NPC = {
+    id: "aldric",
+    name: "Aldric",
+    title: "Warden",
+    x: 5 * TILE_SIZE + 4,
+    y: 12 * TILE_SIZE + 4,
+    w: 24,
+    h: 24,
+    color: "#4a5a3d",
+    icon: "🪓",
+    getLines: getAldricLines,
+};
+
 const INTERACT_RANGE = 44;
 let nearbyNPC = null;
 
@@ -254,7 +297,7 @@ dialogueBoxEl.addEventListener("click", () => {
 });
 
 window.addEventListener("keydown", (e) => {
-    if (!UI.gameStarted) return;
+    if (!UI.gameStarted || UI.gameOverOpen || UI.victoryOpen) return;
     const k = e.key.toLowerCase();
 
     if (UI.dialogueOpen) {

@@ -459,6 +459,71 @@ canvas {
     margin-bottom: 0;
 }
 
+.title-menu {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 6px;
+}
+
+.difficulty-row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.menu-label {
+    font-size: 10px;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.difficulty-options {
+    display: flex;
+    gap: 6px;
+}
+
+.diff-btn {
+    background: transparent;
+    border: 1px solid var(--panel-line);
+    color: var(--ink-dim);
+    font-family: inherit;
+    font-size: 11px;
+    padding: 5px 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.diff-btn:hover {
+    border-color: var(--accent);
+    color: var(--ink);
+}
+
+.diff-btn.active {
+    background: rgba(201, 138, 62, 0.12);
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+.title-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.title-buttons .begin-btn.hidden {
+    display: none;
+}
+
+.mute-btn {
+    font-size: 11px;
+    padding: 6px 14px;
+}
+
 .begin-btn {
     font-size: 13px;
     padding: 10px 28px;
@@ -470,6 +535,71 @@ canvas {
     font-size: 11px;
     color: #6b6058;
     letter-spacing: 1px;
+}
+
+/* end-state */
+.endstate-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 110;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.endstate-screen.hidden {
+    display: none;
+}
+
+.gameover-screen {
+    background: radial-gradient(ellipse at center, rgba(60,10,15,0.9) 0%, rgba(10,5,5,0.98) 75%);
+}
+
+.victory-screen {
+    background: radial-gradient(ellipse at center, rgba(40,50,20,0.88) 0%, rgba(10,12,8,0.97) 75%);
+}
+
+.endstate-inner {
+    max-width: 480px;
+    padding: 40px 36px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.endstate-heading {
+    margin: 0;
+    font-size: 32px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.gameover-screen .endstate-heading {
+    color: #e06a6a;
+    text-shadow: 0 2px 16px rgba(224,106,106,0.4);
+}
+
+.victory-screen .endstate-heading {
+    color: var(--accent-2);
+    text-shadow: 0 2px 16px rgba(111,158,94,0.4);
+}
+
+.endstate-narration {
+    font-size: 13px;
+    color: var(--ink-dim);
+    line-height: 1.8;
+    margin: 14px 0 24px;
+}
+
+.endstate-narration p {
+    margin: 0 0 10px;
+}
+
+.endstate-narration p:last-child {
+    margin-bottom: 0;
 }
 
 /* shared button styles */

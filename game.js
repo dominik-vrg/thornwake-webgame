@@ -14,7 +14,7 @@ const TILE = {
     TREE: 4,
 };
 
-const TILE_DEFS = {
+let TILE_DEFS = {
     [TILE.GRASS]: { name: "grass", walkable: true, color: "#3c5e33", edge: "#345228" },
     [TILE.WALL]: { name: "wall", walkable: false, color: "#5b5750", edge: "#3f3c37" },
     [TILE.WATER]: { name: "water", walkable: false, color: "#2f5c78", edge: "#254a61" },
@@ -68,7 +68,7 @@ function buildDemoMap(cols, rows) {
     };
 }
 
-const map = buildDemoMap(MAP_COLS, MAP_ROWS);
+let map = buildDemoMap(MAP_COLS, MAP_ROWS);
 
 function tileAt(map, col, row) {
     if (col < 0 || row < 0 || col >= map.width || row >= map.height) return TILE.WALL;
@@ -119,7 +119,7 @@ function moveWithCollision(map, entity, dx, dy) {
     }
 }
 
-const UI = { inventoryOpen: false, journalOpen: false, dialogueOpen: false, craftingOpen: false, shopOpen: false, blacksmithOpen: false, gameStarted: false };
+const UI = { inventoryOpen: false, journalOpen: false, dialogueOpen: false, craftingOpen: false, shopOpen: false, blacksmithOpen: false, gameStarted: false, gameOverOpen: false, victoryOpen: false };
 
 //player
 const player = {
@@ -254,6 +254,12 @@ function tick(now) {
     lastTime = now;
     fps = 1 / Math.max(dt, 0.0001);
 
+    if (typeof updateHitStop === "function" && updateHitStop(dt)) {
+        render();
+        requestAnimationFrame(tick);
+        return;
+    }
+
     update(dt);
     render();
 
@@ -261,7 +267,7 @@ function tick(now) {
 }
 
 function update(dt) {
-    const menuOpen = UI.inventoryOpen || UI.journalOpen || UI.dialogueOpen || UI.craftingOpen || UI.shopOpen || UI.blacksmithOpen;
+    const menuOpen = UI.inventoryOpen || UI.journalOpen || UI.dialogueOpen || UI.craftingOpen || UI.shopOpen || UI.blacksmithOpen || UI.gameOverOpen || UI.victoryOpen;
 
     if (UI.gameStarted && !menuOpen) {
         const { dx, dy } = readMovementInput();
@@ -270,19 +276,40 @@ function update(dt) {
     }
     if (UI.gameStarted && !menuOpen && typeof updateWorldPickups === "function") updateWorldPickups(dt);
     if (UI.gameStarted && typeof updateNPCs === "function") updateNPCs(dt);
+    if (UI.gameStarted && !menuOpen && typeof updateZonePortals === "function") updateZonePortals(dt);
+    if (UI.gameStarted && typeof updateAltar === "function") updateAltar();
     if (UI.gameStarted && !menuOpen && typeof updateEnemies === "function") updateEnemies(dt);
+    if (UI.gameStarted && !menuOpen && typeof updateBoss === "function") updateBoss(dt);
+    if (UI.gameStarted && typeof updateShake === "function") updateShake(dt);
+    if (UI.gameStarted && typeof updateAmbience === "function") updateAmbience(dt);
 }
 
 function render() {
     ctx.clearRect(0, 0, VIEW_W, VIEW_H);
+
+    const shake = typeof getShakeOffset === "function" ? getShakeOffset() : { x: 0, y: 0 };
+    camera.x += shake.x;
+    camera.y += shake.y;
+
     drawMap();
+    if (typeof drawCorruptionOverlay === "function") drawCorruptionOverlay(ctx);
+    if (typeof drawAmbience === "function") drawAmbience(ctx, camera);
     if (typeof drawWorldPickups === "function") drawWorldPickups(ctx, camera);
+    if (typeof drawZonePortals === "function") drawZonePortals(ctx, camera);
     if (typeof drawNPCs === "function") drawNPCs(ctx, camera);
     if (typeof drawEnemies === "function") drawEnemies(ctx, camera);
+    if (typeof drawBoss === "function") drawBoss(ctx, camera);
     drawPlayer();
     if (typeof drawPlayerAttack === "function") drawPlayerAttack(ctx, camera);
     if (typeof drawDamagePopups === "function") drawDamagePopups(ctx, camera);
+    if (typeof drawThornCreep === "function") drawThornCreep(ctx);
+
+    camera.x -= shake.x;
+    camera.y -= shake.y;
+
     if (typeof drawHud === "function") drawHud(ctx);
+    if (typeof drawBossHud === "function") drawBossHud(ctx);
+    if (typeof drawZoneLabel === "function") drawZoneLabel(ctx);
     drawDebug(fps);
 }
 

@@ -121,6 +121,7 @@ shopOverlayEl.addEventListener("click", (e) => {
 function toggleShop(force) {
     UI.shopOpen = typeof force === "boolean" ? force : !UI.shopOpen;
     shopOverlayEl.classList.toggle("hidden", !UI.shopOpen);
+    if (typeof playSfx === "function") playSfx(UI.shopOpen ? "uiOpen" : "uiClose");
     if (UI.shopOpen) {
         if (UI.inventoryOpen) toggleInventory(false);
         if (UI.journalOpen) toggleJournal(false);
@@ -131,6 +132,6 @@ function toggleShop(force) {
 }
 
 window.addEventListener("keydown", (e) => {
-    if (!UI.gameStarted) return;
+    if (!UI.gameStarted || UI.gameOverOpen || UI.victoryOpen) return;
     if (e.key.toLowerCase() === "escape" && UI.shopOpen) toggleShop(false);
 });

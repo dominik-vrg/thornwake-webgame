@@ -90,6 +90,7 @@ craftingOverlayEl.addEventListener("click", (e) => {
 function toggleCrafting(force) {
     UI.craftingOpen = typeof force === "boolean" ? force : !UI.craftingOpen;
     craftingOverlayEl.classList.toggle("hidden", !UI.craftingOpen);
+    if (typeof playSfx === "function") playSfx(UI.craftingOpen ? "uiOpen" : "uiClose");
     if (UI.craftingOpen) {
         if (UI.inventoryOpen) toggleInventory(false);
         if (UI.journalOpen) toggleJournal(false);
@@ -100,7 +101,7 @@ function toggleCrafting(force) {
 }
 
 window.addEventListener("keydown", (e) => {
-    if (!UI.gameStarted || UI.dialogueOpen) return;
+    if (!UI.gameStarted || UI.dialogueOpen || UI.gameOverOpen || UI.victoryOpen) return;
     const k = e.key.toLowerCase();
     if (k === "c") { e.preventDefault(); toggleCrafting(); }
     else if (k === "escape" && UI.craftingOpen) toggleCrafting(false);
