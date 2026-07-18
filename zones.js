@@ -130,7 +130,7 @@ const ZONES = {
         firstEntryLore: {
             id: "grove-edge-corruption", title: "The Grove's Edge",
             paragraphs: [
-                "Past the crack, the grass loses its color first — then the light itself seems to sour.",
+                "Past the crack, the grass loses its color first - then the light itself seems to sour.",
                 "Whatever is spreading from below has clearly been here a while.",
             ],
         },
@@ -139,7 +139,7 @@ const ZONES = {
             {
                 x: 23 * TILE_SIZE + 4, y: 3 * TILE_SIZE + 4, toZone: "the_hollow",
                 label: "Deeper In", icon: "🕳️",
-                gate: { type: "level", value: 4, message: "The path beyond twists violently — you're not strong enough to survive it yet. (Reach level 4)" },
+                gate: { type: "level", value: 4, message: "The path beyond twists violently - you're not strong enough to survive it yet. (Reach level 4)" },
             },
         ],
     },
@@ -179,7 +179,7 @@ const ZONES = {
         corruption: { alpha: 0.32, color: "#3a0510" },
         firstEntryLore: {
             id: "heart-chamber", title: "The Heart's Chamber",
-            paragraphs: ["This is where it all comes from. The ground here doesn't just feel wrong — it feels awake."],
+            paragraphs: ["This is where it all comes from. The ground here doesn't just feel wrong - it feels awake."],
         },
         portals: [
             { x: 2 * TILE_SIZE + 4, y: 6 * TILE_SIZE + 4, toZone: "the_hollow", label: "Retreat", icon: "🕳️", gate: null },

@@ -52,7 +52,7 @@ window.addEventListener("keydown", (e) => {
 function buildVictoryNarration() {
     return [
         "The Heart of Thornwake goes still beneath your hands, and for the first time in three nights, the ground stops trembling.",
-        "The thorns nearest you wilt and curl, brittle, harmless. Whatever finds Thornwake now will find a forest again — slowly, but surely.",
+        "The thorns nearest you wilt and curl, brittle, harmless. Whatever finds Thornwake now will find a forest again - slowly, but surely.",
         `You made it here as a level ${player.level} survivor of the grove, carrying home a charm still warm to the touch.`,
         "Thornwake is safe. For now.",
     ];

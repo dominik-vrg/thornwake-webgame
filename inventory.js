@@ -225,7 +225,7 @@ function useFromInventory(index) {
         }
         effects.push(`warded ${def.effect.ward}s`);
     }
-        showToast(`Used ${def.name}${effects.length ? " — " + effects.join(", ") : ""}`);
+        showToast(`Used ${def.name}${effects.length ? " - " + effects.join(", ") : ""}`);
 
     slotItem.qty -= 1;
     if (slotItem.qty <= 0) inventory[index] = null;

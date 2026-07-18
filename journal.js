@@ -3,7 +3,7 @@
 const OPENING_NARRATION = [
     "For as long as anyone living can remember, Thornwake has slept.",
     "Three nights ago the ground split beneath the old grove, and the thorns began to move on their own.",
-    "Something buried out there is waking up — and the forest is waking up with it.",
+    "Something buried out there is waking up - and the forest is waking up with it.",
     "You were the only one who saw it happen. That makes this yours to deal with, whether you like it or not.",
     "Mirela, the village herbalist, may be the only person who understands what's spreading. Find her.",
 ];

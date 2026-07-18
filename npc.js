@@ -40,23 +40,23 @@ let NPCS = [
 ];
 
 const MIRELA_INTRO_LINES = [
-    "Oh — it's you. I heard someone was poking around near the old grove.",
+    "Oh - it's you. I heard someone was poking around near the old grove.",
     "The thorns aren't just overgrown. They're changing. Moving, when nothing's touching them.",
     "I can smell the corruption on the air already, and it's not coming from the ridge like the elders think. It's coming from underneath us.",
-    "I need Wild Herb to prepare anything that might slow this down — the ordinary kind, not the corrupted growth near the crack.",
+    "I need Wild Herb to prepare anything that might slow this down - the ordinary kind, not the corrupted growth near the crack.",
     "Bring me what you can find. And watch yourself out there.",
 ];
 
 const MIRELA_HERB_TURNIN_LINES = [
-    "Wild Herb — perfect, this is exactly what I needed.",
+    "Wild Herb - perfect, this is exactly what I needed.",
     "There's another problem, though. Those Thornlings keep trampling the beds faster than they regrow.",
     "If you could thin out six of them near the grove, I could actually keep a steady supply.",
-    "Here — this is for the herbs. Consider the Thornling work a favor for both of us.",
+    "Here - this is for the herbs. Consider the Thornling work a favor for both of us.",
 ];
 
 const MIRELA_THORNLING_TURNIN_LINES = [
     "You actually did it. Six fewer thorned things skulking around the grove.",
-    "That should buy us some real time. Thank you — truly.",
+    "That should buy us some real time. Thank you - truly.",
     "Here. You've earned this.",
 ];
 
@@ -79,7 +79,7 @@ function getMirelaLines() {
             onEnd: () => {
                 startQuest("mirela-herbs");
                 addLoreEntry("mirelas-warning", "Mirela's Warning", [
-                    "Mirela says the corruption isn't coming from the ridge, like the elders believe — it's coming from beneath the grove itself.",
+                    "Mirela says the corruption isn't coming from the ridge, like the elders believe - it's coming from beneath the grove itself.",
                     "She's asked for Wild Herb to prepare something that might slow the spread. Ordinary herbs, not the corrupted growth near the crack.",
                 ]);
             },
@@ -89,7 +89,7 @@ function getMirelaLines() {
     if (herbStatus === "active") {
         const need = QUEST_DEFS["mirela-herbs"].objective.need;
         const have = getQuestInstance("mirela-herbs").progress;
-        return { lines: [`I still need Wild Herb — you have ${have} of ${need} so far. Look through the grass and thickets.`], onEnd: null };
+        return { lines: [`I still need Wild Herb - you have ${have} of ${need} so far. Look through the grass and thickets.`], onEnd: null };
     }
 
     if (herbStatus === "ready") {
@@ -120,7 +120,7 @@ function getMirelaLines() {
 const BRAM_LINES = [
     "Wares, if you've got the coin for them.",
     "Everything's fresher than it looks. Mostly.",
-    "Careful out there — everything's on edge since the ground split.",
+    "Careful out there - everything's on edge since the ground split.",
     "Gold's gold, corruption or no. Let's trade.",
 ];
 
@@ -131,7 +131,7 @@ const DORN_LINES = [
     "Bring me good steel, or don't bother.",
     "The corruption's in the ore now too, I'd wager. Explains a lot.",
     "I can make good gear better. Can't make bad gear good, mind.",
-    "Gold and grit — that's what upgrades cost.",
+    "Gold and grit - that's what upgrades cost.",
 ];
 
 function getDornLines() {
