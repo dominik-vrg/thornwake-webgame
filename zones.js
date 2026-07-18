@@ -219,7 +219,7 @@ function checkGate(gate) {
     return { ok: true };
 }
 
-function enterZone(zoneId, silent) {
+function enterZone(zoneId, silent, fromZoneId) {
     const zone = ZONES[zoneId];
     if (!zone) return;
 
@@ -236,8 +236,14 @@ function enterZone(zoneId, silent) {
     NPCS = zone.npcs;
     worldPickups = zone.pickups;
 
-    player.x = zone.map.spawn.x * TILE_SIZE + 4;
-    player.y = zone.map.spawn.y * TILE_SIZE + 4;
+    const landingPortal = fromZoneId ? (zone.portals || []).find((p) => p.toZone === fromZoneId) : null;
+    if (landingPortal) {
+        player.x = landingPortal.x;
+        player.y = landingPortal.y + TILE_SIZE;
+    } else {
+        player.x = zone.map.spawn.x * TILE_SIZE + 4;
+        player.y = zone.map.spawn.y * TILE_SIZE + 4;
+    }
     updateCamera();
 
     nearbyNPC = null;
@@ -260,7 +266,7 @@ function enterZone(zoneId, silent) {
 function attemptTravel(portal) {
     const result = checkGate(portal.gate);
     if (!result.ok) { showToast(result.message); return; }
-    enterZone(portal.toZone);
+    enterZone(portal.toZone, false, currentZoneId);
 }
 
 let nearbyPortal = null;

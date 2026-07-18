@@ -167,10 +167,6 @@ function readMovementInput() {
         const inv = 1 / Math.sqrt(2);
         dx *= inv; dy *= inv;
     }
-    if (dy < 0) player.facing = "up";
-    else if (dy > 0) player.facing = "down";
-    else if (dx < 0) player.facing = "left";
-    else if (dx > 0) player.facing = "right";
 
     return { dx, dy };
 }
@@ -178,6 +174,27 @@ function readMovementInput() {
 //render
 const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
+
+let mouseX = VIEW_W / 2, mouseY = VIEW_H / 2;
+
+canvas.addEventListener("mousemove", (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    mouseX = (e.clientX - rect.left) * scaleX;
+    mouseY = (e.clientY - rect.top) * scaleY;
+});
+
+function updateFacingToCursor() {
+    const screenX = player.x - camera.x + player.w / 2;
+    const screenY = player.y - camera.y + player.h / 2;
+    const dx = mouseX - screenX, dy = mouseY - screenY;
+
+    if (Math.abs(dx) < 4 && Math.abs(dy) < 4) return;
+
+    if (Math.abs(dx) > Math.abs(dy)) player.facing = dx > 0 ? "right" : "left";
+    else player.facing = dy > 0 ? "down" : "up";
+}
 
 function drawMap() {
     const startCol = Math.floor(camera.x / TILE_SIZE);
@@ -273,6 +290,7 @@ function update(dt) {
         const { dx, dy } = readMovementInput();
         moveWithCollision(map, player, dx * player.speed * dt, dy * player.speed * dt);
         updateCamera();
+        updateFacingToCursor();
     }
     if (UI.gameStarted && !menuOpen && typeof updateWorldPickups === "function") updateWorldPickups(dt);
     if (UI.gameStarted && typeof updateNPCs === "function") updateNPCs(dt);

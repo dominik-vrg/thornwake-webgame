@@ -30,7 +30,7 @@ function getQuestStatus(defId) {
 
     const obj = QUEST_DEFS[defId].objective;
     if (obj.type === "collect") {
-        return countItemInInventory(obj.itemId) >= obj.need ? "ready" : "active";
+        return instance.progress >= obj.need ? "ready" : "active";
     }
     if (obj.type === "kill") {
         return instance.progress >= obj.need ? "ready" : "active";
@@ -41,7 +41,9 @@ function getQuestStatus(defId) {
 function startQuest(defId) {
     if (getQuestInstance(defId)) return;
     const def = QUEST_DEFS[defId];
-    journal.quests.push({ defId, status: "active", progress: 0 });
+    const obj = def.objective;
+    const initialProgress = obj.type === "collect" ? Math.min(obj.need, countItemInInventory(obj.itemId)) : 0;
+    journal.quests.push({ defId, status: "active", progress: initialProgress });
     showToast(`New quest: ${def.title}`);
     if (UI.journalOpen) renderJournalUI();
 }
@@ -80,6 +82,23 @@ function updateQuestProgressForKill(enemyType) {
         if (obj.type === "kill" && obj.enemyType === enemyType && instance.progress < obj.need) {
             instance.progress++;
             changed = true;
+            if (instance.progress >= obj.need) {
+                showToast(`Objective complete: ${obj.label} (${instance.progress}/${obj.need})`);
+            }
+        }
+    }
+    if (changed && UI.journalOpen) renderJournalUI();
+}
+
+function updateQuestProgressForCollect(itemId, qtyAdded) {
+    let changed = false;
+    for (const instance of journal.quests) {
+        if (instance.status === "completed") continue;
+        const obj = QUEST_DEFS[instance.defId].objective;
+        if (obj.type === "collect" && obj.itemId === itemId && instance.progress < obj.need) {
+            const before = instance.progress;
+            instance.progress = Math.min(obj.need, instance.progress + qtyAdded);
+            changed = instance.progress !== before;
             if (instance.progress >= obj.need) {
                 showToast(`Objective complete: ${obj.label} (${instance.progress}/${obj.need})`);
             }

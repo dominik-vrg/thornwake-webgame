@@ -151,6 +151,9 @@ function addItemToInventory(id, qty) {
         }
     }
 
+    const added = qty - remaining;
+    if (added > 0 && typeof updateQuestProgressForCollect === "function") updateQuestProgressForCollect(id, added);
+
     return remaining === 0;
 }
 

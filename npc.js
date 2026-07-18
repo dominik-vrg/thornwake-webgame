@@ -88,7 +88,7 @@ function getMirelaLines() {
 
     if (herbStatus === "active") {
         const need = QUEST_DEFS["mirela-herbs"].objective.need;
-        const have = countItemInInventory("wildHerb");
+        const have = getQuestInstance("mirela-herbs").progress;
         return { lines: [`I still need Wild Herb — you have ${have} of ${need} so far. Look through the grass and thickets.`], onEnd: null };
     }
 

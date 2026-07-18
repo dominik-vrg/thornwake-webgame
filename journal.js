@@ -37,8 +37,7 @@ const QUEST_STATUS_LABEL = {
 function questObjectiveLine(def, instance) {
     const obj = def.objective;
     if (obj.type === "collect") {
-        const have = Math.min(obj.need, countItemInInventory(obj.itemId));
-        return `${obj.label}: ${have}/${obj.need}`;
+        return `${obj.label}: ${Math.min(obj.need, instance.progress)}/${obj.need}`;
     }
     if (obj.type === "kill") {
         return `${obj.label}: ${instance.progress}/${obj.need}`;

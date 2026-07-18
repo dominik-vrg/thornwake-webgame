@@ -197,7 +197,7 @@ function updateBossAdds(dt) {
 
 function activeBossHit(hitbox) {
     if (boss.active && boss.alive && rectsOverlap(hitbox, boss)) {
-        const dmg = Math.max(1, Math.round((player.attack - BOSS_DEF.defense) * getDifficultyMods().playerDamageMult));
+        const dmg = computeDamage(player.attack, BOSS_DEF.defense, getDifficultyMods().playerDamageMult);
         boss.hp -= dmg;
         boss.hitFlash = 0.15;
         spawnDamagePopup(boss.x + boss.w / 2, boss.y - 10, `-${dmg}`, "#f2d98a");
@@ -209,7 +209,7 @@ function activeBossHit(hitbox) {
 
     for (const add of boss.adds) {
         if (add.alive && rectsOverlap(hitbox, add)) {
-            add.hp -= Math.max(1, Math.round(player.attack * getDifficultyMods().playerDamageMult));
+            add.hp -= computeDamage(player.attack, 0, getDifficultyMods().playerDamageMult);
             add.hitFlash = 0.15;
             if (add.hp <= 0) { add.alive = false; addXP(3); }
         }
@@ -268,16 +268,16 @@ function drawAltar(ctx, camera) {
     ctx.fillText(bossDefeatedEver ? "🥀" : "❤️‍🔥", sx + 13, sy + 14);
 
     if (nearbyAltar && !boss.active) {
-    const bob = Math.sin(worldTime * 4) * 2;
-    const bx = sx + 13, by = sy - 22 + bob;
-    ctx.fillStyle = "rgba(20,16,15,0.85)";
-    ctx.strokeStyle = "#c98a3e";
-    roundRect(ctx, bx - 12, by - 10, 24, 20, 4);
-    ctx.fill();
-    ctx.stroke();
-    ctx.fillStyle = "#c98a3e";
-    ctx.font = "bold 11px 'Courier New', monospace";
-    ctx.fillText("E", bx, by + 1);
+        const bob = Math.sin(worldTime * 4) * 2;
+        const bx = sx + 13, by = sy - 22 + bob;
+        ctx.fillStyle = "rgba(20,16,15,0.85)";
+        ctx.strokeStyle = "#c98a3e";
+        roundRect(ctx, bx - 12, by - 10, 24, 20, 4);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = "#c98a3e";
+        ctx.font = "bold 11px 'Courier New', monospace";
+        ctx.fillText("E", bx, by + 1);
     }
     ctx.restore();
 }

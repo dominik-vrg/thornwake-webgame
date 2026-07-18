@@ -54,7 +54,7 @@ const ENEMY_DEFS = {
             { id: "goldCoin", weight: 4 },
             { id: null, weight: 2 },
         ],
-    },    
+    },
     thornBrute: {
         name: "Thorn Brute",
         icon: "👹",
@@ -74,7 +74,7 @@ const ENEMY_DEFS = {
             { id: "goldCoin", weight: 5 },
             { id: null, weight: 1 },
         ],
-    }, 
+    },
 };
 
 const ENEMY_SPAWNS = [
@@ -111,7 +111,14 @@ function getDifficultyMods() {
     if (typeof DIFFICULTIES !== "undefined" && typeof currentDifficulty !== "undefined" && DIFFICULTIES[currentDifficulty]) {
         return DIFFICULTIES[currentDifficulty];
     }
-    return { enemyDamageMult: 1, enemyHpMult: 1, playerDamageMult: 1};
+    return { enemyDamageMult: 1, enemyHpMult: 1, playerDamageMult: 1 };
+}
+
+const DEFENSE_CONSTANT = 8;
+
+function computeDamage(rawAttack, defense, mult = 1) {
+    const mitigation = defense > 0 ? defense / (defense + DEFENSE_CONSTANT) : 0;
+    return Math.max(1, Math.round(rawAttack * (1 - mitigation) * mult));
 }
 
 function buildEnemiesFromSpawns(spawns) {
@@ -205,13 +212,13 @@ function performAttack() {
     attackCooldownTimer = hasQuickHands ? ATTACK_COOLDOWN * 0.8 : ATTACK_COOLDOWN;
     attackSwingTimer = 0.15;
     if (typeof playSfx === "function") playSfx("swing");
-    
+
     const hitbox = attackHitbox();
     for (const enemy of enemies) {
         if (!enemy.alive) continue;
         if (!rectsOverlap(hitbox, enemy)) continue;
 
-        const dmg = Math.max(1, Math.round((player.attack - enemy.def.defense) * getDifficultyMods().playerDamageMult));
+        const dmg = computeDamage(player.attack, enemy.def.defense, getDifficultyMods().playerDamageMult);
         damageEnemy(enemy, dmg);
     }
 
@@ -267,7 +274,7 @@ function damagePlayer(amount) {
     if (playerInvulnTimer > 0) return;
     playerInvulnTimer = PLAYER_INVULN_TIME;
 
-    const finalDmg = Math.max(1, amount - player.defense);
+    const finalDmg = computeDamage(amount, player.defense);
     player.hp = Math.max(0, player.hp - finalDmg);
     spawnDamagePopup(player.x + player.w / 2, player.y - 4, `-${finalDmg}`, "#e06a6a");
 
@@ -281,7 +288,7 @@ function damagePlayer(amount) {
 function respawnPlayer() {
     if (typeof triggerGameOver === "function") { triggerGameOver(); return; }
 
-    
+
     showToast("You were overwhelmed by the thorns... you wake up back near where you started.");
     player.x = map.spawn.x * TILE_SIZE + 4;
     player.y = map.spawn.y * TILE_SIZE + 4;
