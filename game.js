@@ -14,12 +14,148 @@ const TILE = {
     TREE: 4,
 };
 
+function hashTile(col, row, salt) {
+    let h = (col * 374761393 + row * 668265263 + salt * 2246822519) | 0;
+    h = Math.imul(h ^ (h >>> 13), 1274126177);
+    h = (h ^ (h >>> 16)) >>> 0;
+    return h / 4294967296;
+}
+
+function flatTileDraw(color, edge) {
+    return function (ctx, sx, sy) {
+        ctx.fillStyle = color;
+        ctx.fillRect(sx, sy, TILE_SIZE, TILE_SIZE);
+        ctx.strokeStyle = edge;
+        ctx.lineWidth = 1;
+        ctx.strokeRect(sx + 0.5, sy + 0.5, TILE_SIZE - 1, TILE_SIZE - 1);
+    };
+}
+
+function drawGrassTile(ctx, sx, sy, col, row) {
+    const shade = hashTile(col, row, 1) > 0.5 ? "#3f6a34" : "#375c2d";
+    ctx.fillStyle = shade;
+    ctx.fillRect(sx, sy, TILE_SIZE, TILE_SIZE);
+
+    const tuftCount = 3 + Math.floor(hashTile(col, row, 2) * 3);
+    ctx.lineWidth = 1.4;
+    for (let i = 0; i < tuftCount; i++) {
+        const tx = sx + 4 + hashTile(col, row, 10 + i) * (TILE_SIZE - 8);
+        const ty = sy + 8 + hashTile(col, row, 20 + i) * (TILE_SIZE - 12);
+        const lean = (hashTile(col, row, 30 + i) - 0.5) * 6;
+        const bladeH = 4 + hashTile(col, row, 40 + i) * 4;
+        const phase = hashTile(col, row, 50 + i) * Math.PI * 2;
+        const sway = Math.sin(worldTime * 1.6 + phase) * 1.1;
+
+        ctx.strokeStyle = hashTile(col, row, 60 + i) > 0.5 ? "#6fae4c" : "#5a9440";
+        ctx.beginPath();
+        ctx.moveTo(tx, ty);
+        ctx.quadraticCurveTo(tx + lean * 0.5 + sway, ty - bladeH * 0.6, tx + lean + sway, ty - bladeH);
+        ctx.stroke();
+    }
+}
+
+function drawWallTile(ctx, sx, sy, col, row) {
+    ctx.fillStyle = "#453f38";
+    ctx.fillRect(sx, sy, TILE_SIZE, TILE_SIZE);
+
+    const cx = sx + TILE_SIZE / 2, cy = sy + TILE_SIZE / 2;
+    const pts = 7;
+    ctx.beginPath();
+    for (let i = 0; i < pts; i++) {
+        const a = (i / pts) * Math.PI * 2;
+        const rad = 12 + hashTile(col, row, 70 + i) * 3;
+        const px = cx + Math.cos(a) * rad;
+        const py = cy + Math.sin(a) * rad * 0.9;
+        if (i === 0) ctx.moveTo(px, py); else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+
+    const g = ctx.createLinearGradient(cx - 14, cy - 14, cx + 14, cy + 14);
+    g.addColorStop(0, "#8b9299");
+    g.addColorStop(0.55, "#666d75");
+    g.addColorStop(1, "#454b52");
+    ctx.fillStyle = g;
+    ctx.fill();
+    ctx.strokeStyle = "rgba(30,32,36,0.6)";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+}
+
+function drawWaterTile(ctx, sx, sy, col, row) {
+    const g = ctx.createLinearGradient(sx, sy, sx, sy + TILE_SIZE);
+    g.addColorStop(0, "#4a93ad");
+    g.addColorStop(1, "#2c6884");
+    ctx.fillStyle = g;
+    ctx.fillRect(sx, sy, TILE_SIZE, TILE_SIZE);
+
+    const wave = Math.sin(col * 0.6 + row * 0.4 + worldTime * 1.4);
+    if (wave > 0.35) {
+        ctx.strokeStyle = `rgba(255,255,255,${(wave - 0.35) * 0.5})`;
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(sx + 3, sy + TILE_SIZE * 0.5 - wave * 4);
+        ctx.quadraticCurveTo(sx + TILE_SIZE / 2, sy + TILE_SIZE * 0.5 - wave * 8, sx + TILE_SIZE - 3, sy + TILE_SIZE * 0.5 - wave * 4);
+        ctx.stroke();
+    }
+}
+
+function drawPathTile(ctx, sx, sy, col, row) {
+    const g = ctx.createLinearGradient(sx, sy, sx, sy + TILE_SIZE);
+    g.addColorStop(0, "#8a6a45");
+    g.addColorStop(1, "#6e5133");
+    ctx.fillStyle = g;
+    ctx.fillRect(sx, sy, TILE_SIZE, TILE_SIZE);
+
+    const pebbleCount = 3 + Math.floor(hashTile(col, row, 4) * 3);
+    for (let i = 0; i < pebbleCount; i++) {
+        const px = sx + 3 + hashTile(col, row, 80 + i) * (TILE_SIZE - 6);
+        const py = sy + 3 + hashTile(col, row, 90 + i) * (TILE_SIZE - 6);
+        const pr = 1 + hashTile(col, row, 100 + i) * 1.6;
+        ctx.fillStyle = `rgba(50,35,20,${0.2 + hashTile(col, row, 110 + i) * 0.15})`;
+        ctx.beginPath();
+        ctx.ellipse(px, py, pr, pr * 0.7, 0, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+function drawTreeTile(ctx, sx, sy, col, row) {
+    drawGrassTile(ctx, sx, sy, col, row);
+
+    const cx = sx + TILE_SIZE / 2;
+    const groundY = sy + TILE_SIZE - 4;
+    const phase = hashTile(col, row, 5) * Math.PI * 2;
+    const sway = Math.sin(worldTime * 1.1 + phase) * 0.06;
+
+    ctx.beginPath();
+    ctx.ellipse(cx, groundY, 11, 4, 0, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(0,0,0,0.25)";
+    ctx.fill();
+
+    ctx.fillStyle = "#4a3320";
+    ctx.fillRect(cx - 2.5, groundY - 10, 5, 10);
+
+    ctx.save();
+    ctx.translate(cx, groundY - 12);
+    ctx.rotate(sway);
+    const canopy = [{ dx: -5, dy: -2, r: 8 }, { dx: 5, dy: -3, r: 7 }, { dx: 0, dy: -9, r: 8 }];
+    for (const b of canopy) {
+        const bg = ctx.createRadialGradient(b.dx - b.r * 0.3, b.dy - b.r * 0.3, 1, b.dx, b.dy, b.r);
+        bg.addColorStop(0, "#6fae4c");
+        bg.addColorStop(1, "#2f5f24");
+        ctx.fillStyle = bg;
+        ctx.beginPath();
+        ctx.arc(b.dx, b.dy, b.r, 0, Math.PI * 2);
+        ctx.fill();
+    }
+    ctx.restore();
+}
+
 let TILE_DEFS = {
-    [TILE.GRASS]: { name: "grass", walkable: true, color: "#3c5e33", edge: "#345228" },
-    [TILE.WALL]: { name: "wall", walkable: false, color: "#5b5750", edge: "#3f3c37" },
-    [TILE.WATER]: { name: "water", walkable: false, color: "#2f5c78", edge: "#254a61" },
-    [TILE.PATH]: { name: "path", walkable: true, color: "#7a5d3f", edge: "#664e35" },
-    [TILE.TREE]: { name: "tree", walkable: false, color: "#2c4423", edge: "#213419" },
+    [TILE.GRASS]: { name: "grass", walkable: true, draw: drawGrassTile },
+    [TILE.WALL]: { name: "wall", walkable: false, draw: drawWallTile },
+    [TILE.WATER]: { name: "water", walkable: false, draw: drawWaterTile },
+    [TILE.PATH]: { name: "path", walkable: true, draw: drawPathTile },
+    [TILE.TREE]: { name: "tree", walkable: false, draw: drawTreeTile },
 };
 
 function buildDemoMap(cols, rows) {
@@ -206,14 +342,10 @@ function drawMap() {
         for (let c = startCol; c <= endCol; c++) {
             const id = tileAt(map, c, r);
             const def = TILE_DEFS[id];
-            if (!def) continue;
+            if (!def || !def.draw) continue;
             const sx = c * TILE_SIZE - camera.x;
             const sy = r * TILE_SIZE - camera.y;
-            ctx.fillStyle = def.color;
-            ctx.fillRect(sx, sy, TILE_SIZE, TILE_SIZE);
-            ctx.strokeStyle = def.edge;
-            ctx.lineWidth = 1;
-            ctx.strokeRect(sx + 0.5, sy + 0.5, TILE_SIZE - 1, TILE_SIZE - 1);
+            def.draw(ctx, sx, sy, c, r);
         }
     }
 }
